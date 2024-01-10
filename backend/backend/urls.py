@@ -19,6 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('authentication.urls')),
+    path('api/auth/', include('authentication.urls')),
+    path('api/', include('derleng.urls')),
     path('social_auth2/', include('drf_social_oauth2.urls', namespace='drf'))
 ]

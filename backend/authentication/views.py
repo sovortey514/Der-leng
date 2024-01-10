@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
+from backend.settings import SIMPLE_JWT
 from .validations import user_validation, is_valid_email, is_valid_username
 from .serializers import *
 
@@ -44,7 +45,9 @@ class UserLogin(APIView):
 
         return {
             'refresh': str(refresh),
+            'refresh_exp': SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
             'access': str(access_token),
+            'access_exp': SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
         }
 
     def login_user(self, request, username, password):
@@ -82,7 +85,7 @@ class UserLogin(APIView):
                     return Response({'errors': 'Invalid password. Please double-check your password and try again.'}, status=status.HTTP_401_UNAUTHORIZED)
 
                 responses = [{'tokens': self.get_tokens_for_user(user), 'user': UserSerializer(user).data} for user in auth_users]
-                return Response(responses, status=status.HTTP_300_MULTIPLE_CHOICES)
+                return Response(responses, status=status.HTTP_202_ACCEPTED)
             
 class UserView(APIView):
     permission_classes = [IsAuthenticated]

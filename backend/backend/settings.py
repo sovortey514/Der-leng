@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'authentication',
+    'derleng'
+
     'rest_framework',
     'rest_framework_simplejwt',
     'oauth2_provider',
@@ -71,12 +73,11 @@ ROOT_URLCONF = 'backend.urls'
 
 
 CORS_ALLOWED_ORIGINS = [
-    "https://read-only.example.com",
-    "https://read-and-write.example.com",
+    "http://localhost:5173"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://read-and-write.example.com",
+    "http://localhost:5173"
 ]
 
 TEMPLATES = [
