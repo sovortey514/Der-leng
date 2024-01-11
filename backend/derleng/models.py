@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 class User_role (models.Model):
@@ -119,7 +120,12 @@ class Review (models.Model):
             editable = False)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     package_id = models.ForeignKey(Package, on_delete=models.CASCADE)
-    rating = models.IntegerField(validators=[5, 0])
+    rating = models.IntegerField(
+        validators=[
+            MinValueValidator(0, message="Rating must be greater than or equal to 0."),
+            MaxValueValidator(5, message="Rating must be less than or equal to 5.")
+        ]
+    )
     comment = models.CharField(max_length=100)
     created_at = models.TimeField(auto_now_add=True)
     
