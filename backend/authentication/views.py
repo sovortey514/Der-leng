@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 
@@ -9,11 +9,14 @@ from rest_framework.response import Response
 from rest_framework import permissions, status, viewsets
 from rest_framework.permissions import IsAuthenticated
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from backend.settings import SIMPLE_JWT
 from .validations import user_validation, is_valid_email, is_valid_username, validate_user_update
 from .serializers import *
+from .permissions import IsAdminOrStaffOrReadOnly
 
 from drf_social_oauth2.views import TokenView, ConvertTokenView
 from .mixins import get_jwt_by_token
@@ -126,3 +129,33 @@ class SocialLoginView(ConvertTokenView):
 
         return Response(new_data, status=response.status_code)
 
+
+"""
+This ViewSet automatically provides `list`, `create`, `retrieve`,
+`update` and `delete` actions.
+"""
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminOrStaffOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'
+
+    def update(self, request, pk=None):
+        try:
+            user_update = User.objects.get(pk=pk)
+
+            try:
+                updated_user = validate_user_update(user_update=user_update, request_data=request.data)
+                return Response(UserSerializer(updated_user).data, status=status.HTTP_200_OK)
+            
+            except ValidationError as error:
+                return Response({"error": str(error)}, status=status.HTTP_404_NOT_FOUND)
+
+        except ObjectDoesNotExist as error:
+            return Response({"error": str(error)}, status=status.HTTP_404_NOT_FOUND)
+
+    def validate_user_update(user_update, request_data):
+        serializer = UserSerializer(instance=user_update, data=request_data)
+        serializer.is_valid(raise_exception=True)
+        return serializer.save()

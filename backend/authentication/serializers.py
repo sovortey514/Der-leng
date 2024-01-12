@@ -9,6 +9,11 @@ class User_roleSerializer(serializers.ModelSerializer):
         model = User_role
         fields = '__all__'
 
+class BasicUser_roleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_role
+        fields = ['id', 'name']
+
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -25,9 +30,10 @@ class RegisterSerializer(serializers.ModelSerializer):
     #     return user_obj
     
 class UserSerializer(serializers.ModelSerializer):
+    role = BasicUser_roleSerializer()
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'fullname']
+        fields = ['id', 'username', 'email', 'fullname', 'role']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

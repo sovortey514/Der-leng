@@ -42,6 +42,7 @@ class Package (models.Model):
             default = uuid.uuid4,
             editable = False)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
     description = models.TextField()
     category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
     discount = models.FloatField()
