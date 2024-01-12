@@ -10,14 +10,17 @@ class GuideRegisterInfoAdmin(admin.ModelAdmin):
 @admin.register(Profile_image)
 class ProfileImageAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'type', 'is_active', 'created_at')
+    list_filter = ('is_active', 'created_at' , 'type')
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
+    search_fields=('name',)
 
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     list_display = ('id', 'user_id', 'description', 'category_id', 'discount', 'address', 'video_url')
+    search_fields = ( 'description' , )
 
 @admin.register(Package_image)
 class PackageImageAdmin(admin.ModelAdmin):
@@ -30,6 +33,8 @@ class PackageScheduleAdmin(admin.ModelAdmin):
 @admin.register(package_service)
 class PackageServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'detail', 'package_id', 'price')
+    search_fields = ('name',)
+    list_filter = ( 'price' ,)
 
 @admin.register(package_unavailable_date)
 class PackageUnavailableDateAdmin(admin.ModelAdmin):
@@ -38,6 +43,8 @@ class PackageUnavailableDateAdmin(admin.ModelAdmin):
 @admin.register(Payment_method)
 class PaymentMethodAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'type', 'number', 'holder_name', 'token')
+    search_fields = ( 'holder_name' , 'number')
+    list_filter=('type' ,)
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
