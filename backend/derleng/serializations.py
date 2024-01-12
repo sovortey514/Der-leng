@@ -10,15 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id' , 'username' , 'fullname')        
-
-class User_roleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User_role
-        fields = '__all__'
         
-class Profile_pictureSerializer(serializers.ModelSerializer):
+class Profile_imageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Profile_picture
+        model = Profile_image
         fields = '__all__'
         
 class CategorySerializer(serializers.ModelSerializer):

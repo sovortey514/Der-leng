@@ -1,8 +1,13 @@
 from rest_framework import serializers
 from django.db.models import Q
 
-from .models import User
+from .models import User, User_role
 from derleng.models import Profile_image
+
+class User_roleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_role
+        fields = '__all__'
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
