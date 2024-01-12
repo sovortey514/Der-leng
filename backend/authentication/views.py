@@ -11,8 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from backend.settings import SIMPLE_JWT
-from .validations import user_validation, is_valid_email, is_valid_username
+from .validations import user_validation, is_valid_email, is_valid_username, validate_user_update
 from .serializers import *
+
+from drf_social_oauth2.views import TokenView, ConvertTokenView
+from .mixins import get_jwt_by_token
 
 # Create your views here.
 def index(request):
@@ -41,13 +44,14 @@ class UserLogin(APIView):
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
         access_token = refresh.access_token
-        access_token['user'] = UserSerializer(user).data
+        user_data = UserSerializer(user).data
 
         return {
             'refresh': str(refresh),
             'refresh_exp': SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
             'access': str(access_token),
             'access_exp': SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+            'user': user_data,
         }
 
     def login_user(self, request, username, password):
@@ -59,6 +63,7 @@ class UserLogin(APIView):
 
     def post(self, request):
         data = request.data
+        print(data)
         username = data.get('username', '')
         password = data.get('password', '')
 
@@ -87,14 +92,19 @@ class UserLogin(APIView):
                 responses = [{'tokens': self.get_tokens_for_user(user), 'user': UserSerializer(user).data} for user in auth_users]
                 return Response(responses, status=status.HTTP_202_ACCEPTED)
             
-class UserView(APIView):
+class CurrentUserView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        print(request.user)
         return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
-
-from drf_social_oauth2.views import TokenView, ConvertTokenView
-from .mixins import get_jwt_by_token
+    
+    def put(self, request, format=None):
+        user_update = request.user
+        print(user_update.id)
+        try:
+            updated_user = validate_user_update(user_update=user_update, request_data=request.data)
+            return Response(UserSerializer(updated_user).data, status=status.HTTP_200_OK)
+        except ValidationError as errors:
+            return Response({'error': errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class SocialLoginView(ConvertTokenView):
     permission_classes = (permissions.AllowAny,)
