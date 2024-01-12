@@ -9,7 +9,7 @@ class User_role (models.Model):
             primary_key = True,
             default = uuid.uuid4,
             editable = False)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, unique=True)
     description = models.CharField(max_length=50)
 
 class User(AbstractUser):
@@ -26,3 +26,11 @@ class User(AbstractUser):
         ('google', 'google'),
         ('facebook', 'facebook'),
     ))
+
+    def save(self, *args, **kwargs):
+        default_role, created = User_role.objects.get_or_create(name='customer')
+        
+        if not self.role:
+            self.role = default_role
+
+        super().save(*args, **kwargs)

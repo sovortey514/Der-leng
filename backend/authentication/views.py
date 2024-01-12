@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login, logout
+from django.utils import timezone
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -32,9 +33,10 @@ class UserRegister(APIView):
         
         serializer = RegisterSerializer(data=validate_data)
         if serializer.is_valid(raise_exception=True):
-            user = serializer.create(validate_data=validate_data)
+            # user = serializer.create(validate_data=validate_data)
+            user = serializer.save()
             if user:
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
         else:
             return Response({'message': 'Invalidate user data.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -47,16 +49,18 @@ class UserLogin(APIView):
         user_data = UserSerializer(user).data
 
         return {
-            'refresh': str(refresh),
-            'refresh_exp': SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
-            'access': str(access_token),
-            'access_exp': SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+            'refresh_token': str(refresh),
+            'refresh_token_exp': SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+            'access_token': str(access_token),
+            'refresh_token_exp': SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
             'user': user_data,
         }
 
     def login_user(self, request, username, password):
         user = authenticate(username=username, password=password)
         if user:
+            user.last_login = timezone.now()
+            user.save()
             return Response(self.get_tokens_for_user(user), status=status.HTTP_200_OK)
         else:
             return Response({'errors': 'Invalid password. Please double-check your password and try again.'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -84,12 +88,14 @@ class UserLogin(APIView):
                 for user in find_users:
                     auth_user = authenticate(username=user.username, password=password)
                     if auth_user:
+                        auth_user.last_login = timezone.now()
+                        auth_user.save()
                         auth_users.append(auth_user)
 
                 if not auth_users:
                     return Response({'errors': 'Invalid password. Please double-check your password and try again.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-                responses = [{'tokens': self.get_tokens_for_user(user), 'user': UserSerializer(user).data} for user in auth_users]
+                responses = [self.get_tokens_for_user(user) for user in auth_users]
                 return Response(responses, status=status.HTTP_202_ACCEPTED)
             
 class CurrentUserView(APIView):
