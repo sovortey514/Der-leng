@@ -34,3 +34,6 @@ backend/migrations/*
 backend/__pycache__/*
 authentication/migrations/*
 authentication/__pycache__/*
+*/__pycache__/*
+*/*/__pycache__/*
+media

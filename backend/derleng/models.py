@@ -41,49 +41,50 @@ class Package (models.Model):
             primary_key = True,
             default = uuid.uuid4,
             editable = False)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
     description = models.TextField()
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
-    discount = models.FloatField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    discount = models.FloatField(default=0.00)
     tour_place_coordinate = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
-    video_url = models.CharField(max_length=255)
+    video_url = models.CharField(max_length=255, null=True, blank=True)
     
 class Package_image (models.Model):
     id = models.UUIDField(
             primary_key = True,
             default = uuid.uuid4,
             editable = False)
-    package_id = models.ForeignKey(Package, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images/package_images/')
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images/package_images/', max_length=500)
     
 class Package_schedule (models.Model):
     id = models.UUIDField(
             primary_key = True,
             default = uuid.uuid4,
             editable = False)
-    package_id = models.ForeignKey(Package, on_delete=models.CASCADE)
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
     destination = models.CharField(max_length=100)
     start_time = models.TimeField()
     end_time = models.TimeField()
     
-class package_service (models.Model):
+class Package_service (models.Model):
     id = models.UUIDField(
             primary_key = True,
             default = uuid.uuid4,
             editable = False)
     detail = models.CharField(max_length=100)
-    package_id = models.ForeignKey(Package, on_delete=models.CASCADE)
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
     price = models.FloatField()
+    is_close = models.BooleanField(default=False)
 
-class package_unavailable_date(models.Model):
+class Package_unavailable_date(models.Model):
     id = models.UUIDField(
             primary_key = True,
             default = uuid.uuid4,
             editable = False)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
-    unavailable_at = models.DateTimeField()
+    unavailable_at = models.DateField()
     
 class Payment_method (models.Model):
     id = models.UUIDField(
@@ -108,7 +109,7 @@ class Cart (models.Model):
             default = uuid.uuid4,
             editable = False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    service = models.ForeignKey(package_service, on_delete=models.CASCADE)
+    service = models.ForeignKey(Package_service, on_delete=models.CASCADE)
     customer_ammount = models.IntegerField()
     booking_date = models.TimeField()
     created_at = models.TimeField(auto_now_add=True)
@@ -118,7 +119,7 @@ class Booking (models.Model):
             primary_key = True,
             default = uuid.uuid4,
             editable = False)
-    cart_id = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     is_accept = models.BooleanField()
     created_at = models.TimeField(auto_now_add=True)
     
@@ -127,8 +128,8 @@ class Review (models.Model):
             primary_key = True,
             default = uuid.uuid4,
             editable = False)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    package_id = models.ForeignKey(Package, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
     rating = models.IntegerField(
         validators=[
             MinValueValidator(0, message="Rating must be greater than or equal to 0."),

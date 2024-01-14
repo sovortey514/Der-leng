@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Guide_register_info, Profile_image, Category, Package, Package_image, Package_schedule, package_service, package_unavailable_date, Payment_method, Cart, Booking, Review, Thumbnail
+from .models import Guide_register_info, Profile_image, Category, Package, Package_image, Package_schedule, Package_service, Package_unavailable_date, Payment_method, Cart, Booking, Review, Thumbnail
 
 @admin.register(Guide_register_info)
 class GuideRegisterInfoAdmin(admin.ModelAdmin):
@@ -30,13 +30,13 @@ class PackageImageAdmin(admin.ModelAdmin):
 class PackageScheduleAdmin(admin.ModelAdmin):
     list_display = ('id', 'package_id', 'destination', 'start_time', 'end_time')
 
-@admin.register(package_service)
+@admin.register(Package_service)
 class PackageServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'detail', 'package_id', 'price')
     search_fields = ('name',)
     list_filter = ( 'price' ,)
 
-@admin.register(package_unavailable_date)
+@admin.register(Package_unavailable_date)
 class PackageUnavailableDateAdmin(admin.ModelAdmin):
     list_display = ('id', 'package', 'unavailable_at')
 

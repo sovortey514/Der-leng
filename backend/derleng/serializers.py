@@ -1,19 +1,31 @@
+from authentication.serializers import UserSerializer
 from .models import *
-from rest_framework import serializers
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        exclude = ('password' ,)
-        
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id' , 'username' , 'fullname')        
+from rest_framework import serializers    
         
 class Profile_imageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile_image
+        fields = '__all__'
+        
+class Package_scheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package_schedule
+        fields = '__all__'
+        # exclude = ('package',)
+    
+class Package_serviceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package_service
+        fields = '__all__'
+
+class Package_imageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package_image
+        fields = '__all__'
+
+class Package_unavailable_dateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package_unavailable_date
         fields = '__all__'
         
 class CategorySerializer(serializers.ModelSerializer):
@@ -21,37 +33,26 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
         
-class PackageSerializer(serializers.ModelSerializer):
+class BasicPackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
         fields = '__all__'
-        
-class Package_imageSerializer(serializers.ModelSerializer):
+
+class PackageSerializer(serializers.ModelSerializer):
+    package_service = Package_serviceSerializer(source='package_service_set', many=True, read_only=True)
+    package_schedule = Package_scheduleSerializer(source='package_schedule_set', many=True, read_only=True)
+    package_image = Package_imageSerializer(source='package_image_set', many=True, read_only=True)
+    user = UserSerializer(read_only=True)
+    category = CategorySerializer(read_only=True)
     class Meta:
-        model = Package_image
-        fields = '__all__'
-        
-class Package_scheduleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Package_schedule
-        fields = '__all__'
-        
-class Package_scheduleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Package_schedule
-        fields = '__all__'
-    
-class Package_serviceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = package_service
+        model = Package
         fields = '__all__'
         
 class Payment_methodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment_method
         fields = '__all__'
-        
-        
+          
 class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart

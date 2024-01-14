@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import *
-from .serializations import *
+from derleng.models import *
+from derleng.serializers import *
 from rest_framework import status
 
 # Create your views here.

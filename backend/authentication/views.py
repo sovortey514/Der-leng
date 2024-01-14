@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import permissions, status, viewsets
+from rest_framework import permissions, status, viewsets, filters
 from rest_framework.permissions import IsAuthenticated
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -16,7 +16,7 @@ from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from backend.settings import SIMPLE_JWT
 from .validations import user_validation, is_valid_email, is_valid_username, validate_user_update
 from .serializers import *
-from .permissions import IsAdminOrStaffOrReadOnly
+from .permissions import IsAdmin, IsAdminOrStaffOrReadOnly, IsStaff
 
 from drf_social_oauth2.views import TokenView, ConvertTokenView
 from .mixins import get_jwt_by_token
@@ -36,8 +36,7 @@ class UserRegister(APIView):
         
         serializer = RegisterSerializer(data=validate_data)
         if serializer.is_valid(raise_exception=True):
-            # user = serializer.create(validate_data=validate_data)
-            user = serializer.save()
+            user = serializer.create(validate_data=validate_data)
             if user:
                 return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
         else:
@@ -138,15 +137,34 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdminOrStaffOrReadOnly]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = '__all__'
+    search_fields = ['fullname', 'username', 'email']
+
 
     def update(self, request, pk=None):
         try:
             user_update = User.objects.get(pk=pk)
 
             try:
-                updated_user = validate_user_update(user_update=user_update, request_data=request.data)
+                """
+                Update role user if role_id given
+                """
+                if 'role_id' in request.data:
+                    role_id = request.data['role_id']
+                    new_role = User_role.objects.filter(pk=role_id).first()
+
+                    if not new_role:
+                        raise ObjectDoesNotExist
+                    
+                    if IsStaff and (new_role.name == "admin" or new_role.name == "staff"):
+                        return Response({"error": "You do not have permission to assign role as admin or staff."}, status=status.HTTP_403_FORBIDDEN)
+                        
+                    user_update.role = new_role
+
+                serializer = UserSerializer(instance=user_update, data=request.data, partial=True)
+                serializer.is_valid(raise_exception=True)
+                updated_user = serializer.save()
                 return Response(UserSerializer(updated_user).data, status=status.HTTP_200_OK)
             
             except ValidationError as error:
@@ -154,8 +172,3 @@ class UserViewSet(viewsets.ModelViewSet):
 
         except ObjectDoesNotExist as error:
             return Response({"error": str(error)}, status=status.HTTP_404_NOT_FOUND)
-
-    def validate_user_update(user_update, request_data):
-        serializer = UserSerializer(instance=user_update, data=request_data)
-        serializer.is_valid(raise_exception=True)
-        return serializer.save()
