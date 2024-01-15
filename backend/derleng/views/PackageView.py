@@ -79,20 +79,23 @@ class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
             if delete_images:
                 self.delete_image(delete_images=delete_images)
 
-            services = json.loads(request_data.get("services", '[]'))
-            if not services:
-                raise ValidationError({"services": "package's services is rerequired at least one."})
-            
-            self.assign_service(package_instance=package_instance, services=services)
+            if "services" in request_data:
+                services = json.loads(request_data.get("services", '[]'))
+                if not services:
+                    raise ValidationError({"services": "package's services is rerequired at least one."})
+                
+                self.assign_service(package_instance=package_instance, services=services)
 
-            schedules = json.loads(request_data.get("schedules", '[]'))
-            if not schedules:
-                raise ValidationError({"schedules": "package's schedules is rerequired at least one."})
+            if "schedules" in request_data:
+                schedules = json.loads(request_data.get("schedules", '[]'))
+                if not schedules:
+                    raise ValidationError({"schedules": "package's schedules is rerequired at least one."})
+                
+                self.assign_schedule(package_instance=package_instance, schedules=schedules)
             
-            self.assign_schedule(package_instance=package_instance, schedules=schedules)
-
-            unavailable_dates = json.loads(request_data.get("unavailable_dates", '[]'))
-            self.assign_unavailable_date(package_instance=package_instance, unavailable_dates=unavailable_dates)  
+            if "unavailable_dates" in request_data:
+                unavailable_dates = json.loads(request_data.get("unavailable_dates", '[]'))
+                self.assign_unavailable_date(package_instance=package_instance, unavailable_dates=unavailable_dates)  
 
             return Response(PackageSerializer(package_instance).data, status=status.HTTP_200_OK) 
 
