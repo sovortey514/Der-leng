@@ -49,6 +49,7 @@ class Package (models.Model):
     tour_place_coordinate = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     video_url = models.CharField(max_length=255, null=True, blank=True)
+    is_close = models.BooleanField(default=False)
     
 class Package_image (models.Model):
     id = models.UUIDField(
