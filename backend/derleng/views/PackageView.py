@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from derleng.models import Package, Category, Package_image
-from derleng.permissions import Is_Admin_Or_Staff_Or_TourGuide_Or_ReadOnly
+from authentication.permissions import Is_Admin_Or_Staff_Or_TourGuide_Or_ReadOnly
 from derleng.serializers import BasicPackageSerializer, Package_scheduleSerializer, Package_serviceSerializer, Package_unavailable_dateSerializer, PackageSerializer, Package_imageSerializer
 from derleng.mixins import PackageMixin
 
@@ -25,7 +25,7 @@ class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         try:
-            request_data = request.data
+            request_data = request.data.copy()
             request_data['user'] = request.user.id
 
             package_serializer = BasicPackageSerializer(data=request_data)
@@ -62,7 +62,7 @@ class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
     @transaction.atomic
     def update(self, request, *args, **kwargs):
         try:
-            request_data = request.data
+            request_data = request.data.copy()
             package_instance = self.get_object()
             request_data['user'] = request.user.id
 
@@ -99,3 +99,16 @@ class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
         except Exception as error:
             transaction.set_rollback(True)
             return Response({"error": str(error)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    """
+    Package is not allowed to delete to prevent from preblem that customer already booked but package turn to null. 
+    Instead of delete package.is_close = True
+    """
+    def destroy(self, request, *args, **kwargs):
+        try:
+            delete_package = self.get_object()
+            delete_package.is_close = True
+            delete_package.save()
+            return Response({"message": "Package closed successfully."}, status=status.HTTP_200_OK)
+        except Exception as error:
+            return Response({"error": str(error)}, status=status.HTTP_404_NOT_FOUND)
