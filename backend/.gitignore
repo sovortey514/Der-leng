@@ -1,39 +1,51 @@
-# Logs
-logs
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# Django
+*.sqlite3
+db.sqlite3
+# /media/
+# /static/
+
+# IDE/Editor Files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Compiled Files
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environments
+/venv/
+/env/
+/env3/
+
+# Logs and Databases
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+*.sql
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# OS and Temporary Files
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+.DS_Store?
+*.swp
+*~
 
-venv
+# Dependency Files
+/node_modules/
+/bower_components/
 
-#backend
-db.*
-.env
-derleng/migrations/*
-derleng/__pycache__/*
-backend/migrations/*
-backend/__pycache__/*
-authentication/migrations/*
-authentication/__pycache__/*
-*/__pycache__/*
-*/*/__pycache__/*
-media
+# Compiled Java Classes
+*.class
+
+# Compiled C++ Files
+*.out
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
