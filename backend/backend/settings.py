@@ -242,3 +242,7 @@ SIMPLE_JWT = {
 #-----------> Media Dir <---------------
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+#------------- Stripe -------------------
+STRIPE_PUBLIC_KEY = 'your-public-key'
+STRIPE_SECRET_KEY = 'your-secret-key'
