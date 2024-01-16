@@ -10,3 +10,5 @@ pip install pipreqs for write requirement.txt
 pipreqs /path/to/project
 
 pip install django-filter
+
+pip install stripe
