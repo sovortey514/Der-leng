@@ -103,14 +103,15 @@ class Payment_method (models.Model):
             editable = False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=30)
-    number = models.CharField(max_length=16, unique=True)
     holder_name = models.CharField(max_length=255)
-    token = models.CharField(max_length=255, blank=True, null=True)
-    # expiration_date = models.DateField()
-    # cvv = models.CharField(max_length=3)
+    brand = models.CharField(max_length=30)
+    last4 = models.CharField(max_length=4)
+    payment_method_id = models.CharField(max_length=255)
+    exp_month = models.IntegerField()
+    exp_year = models.IntegerField()
 
     def __str__(self):
-        return f"Visa Card ending in {self.card_number[-4:]}"
+        return f"**** **** **** {self.last4}"
 
     
 class Cart (models.Model):
@@ -156,4 +157,3 @@ class Thumbnail (models.Model):
             editable = False)
     name = models.CharField(max_length=50)
     image = models.ImageField(upload_to='images/thumbnails/')
-    order_number = models.IntegerField()

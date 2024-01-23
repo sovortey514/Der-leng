@@ -42,8 +42,8 @@ class PackageUnavailableDateAdmin(admin.ModelAdmin):
 
 @admin.register(Payment_method)
 class PaymentMethodAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'type', 'number', 'holder_name', 'token')
-    search_fields = ( 'holder_name' , 'number')
+    list_display = ('id', 'user', 'type', 'holder_name', 'brand', 'last4', 'payment_method_id', 'exp_month', 'exp_year')
+    search_fields = ( 'holder_name' ,)
     list_filter=('type' ,)
 
 @admin.register(Cart)
@@ -60,8 +60,8 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Thumbnail)
 class ThumbnailAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'image', 'order_number')
+    list_display = ('id', 'name', 'image')
 
 @admin.register(Commission)
-class ThumbnailAdmin(admin.ModelAdmin):
+class CommissionAdmin(admin.ModelAdmin):
     list_display = ('id', 'type', 'percentage_of_sale_price')
