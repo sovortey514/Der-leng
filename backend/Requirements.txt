@@ -12,3 +12,5 @@ pipreqs /path/to/project
 pip install django-filter
 
 pip install stripe
+
+pip install --upgrade setuptools
