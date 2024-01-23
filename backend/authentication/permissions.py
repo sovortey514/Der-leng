@@ -15,6 +15,12 @@ class UserRolePermission:
 
     def is_customer(self, user):
         return bool( user and user.is_authenticated and user.role.name == "customer" )
+    
+class IsAdminOrOnly(BasePermission, UserRolePermission):
+    def has_permission(self, request, view):
+        return bool(
+            request.method in SAFE_METHODS or
+            self.is_admin(user=request.user))
 
 class IsAdminOrStaffOrReadOnly(BasePermission, UserRolePermission):
     def has_permission(self, request, view):
@@ -24,7 +30,7 @@ class IsAdminOrStaffOrReadOnly(BasePermission, UserRolePermission):
             self.is_admin(user=request.user)
         )
 
-class Is_Admin_Or_Staff_Or_TourGuide_Or_ReadOnly(BasePermission, UserRolePermission):
+class IsAdminOrStaffOrTourGuideOrReadOnly(BasePermission, UserRolePermission):
     def has_permission(self, request, view):
         print()
         return bool(
@@ -47,6 +53,10 @@ class IsTour_Guide(BasePermission, UserRolePermission):
 class IsCustomer(BasePermission, UserRolePermission):
     def has_permission(self, request, view):
         return self.is_customer(user=request.user)
+    
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return bool(request.method in SAFE_METHODS)
     
 
     

@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from derleng.views import PaymentView
+from derleng.views import Payment_methodView
 
 from .views import ThumbnailView, PackageView, ReviewView, CategoryView
 
@@ -17,5 +17,6 @@ urlpatterns = [
     path('category/<uuid:pk>' , CategoryView.CategoryAPIView.as_view(), name=''),
     path('review' , ReviewView.ReviewAPIView.as_view(), name=''),
     path('review/<uuid:pk>' , ReviewView.ReviewAPIView.as_view(), name=''),
-    path('test-payment/', PaymentView.test_payment, name="test_payment"),
+    path('test-payment/', Payment_methodView.test_payment, name="test_payment"),
+    path('payments', Payment_methodView.Payment_methodAPIView.as_view(), name='payment_method')
 ]

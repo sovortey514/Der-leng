@@ -2,15 +2,14 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from authentication.permissions import IsAdminOrStaffOrReadOnly
 from derleng.models import *
 from derleng.serializers import *
 from rest_framework import status
 
-# Create your views here.
-def index(request):
-    return HttpResponse('Hello Dara, this is me.')
-
 class ThumbnailAPIView(APIView):
+    permission_classes = [IsAdminOrStaffOrReadOnly]
+
     def get(self , request):
         thumbnailList = Thumbnail.objects.all()
         serializer = ThumbnailSerializer(thumbnailList , many = True)
@@ -24,17 +23,13 @@ class ThumbnailAPIView(APIView):
         return Response(serializers.errors , status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk):
-        print(pk)
         thumbnail_instance = Thumbnail.objects.get(id=pk)
-        print(pk)
-        print(thumbnail_instance)
         serializer = ThumbnailSerializer(thumbnail_instance, data=request.data)
         if serializer.is_valid():
             serializer.save()   
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
     def delete(self , request , pk):
         thumbnail_instance = Thumbnail.objects.get(id=pk)
         thumbnail_instance.delete()
