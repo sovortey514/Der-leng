@@ -72,4 +72,3 @@ class ThumbnailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Thumbnail
         fields = '__all__'
-        

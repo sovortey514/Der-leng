@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Guide_register_info, Profile_image, Category, Package, Package_image, Package_schedule, Package_service, Package_unavailable_date, Payment_method, Cart, Booking, Review, Thumbnail
+from .models import Commission, Guide_register_info, Profile_image, Category, Package, Package_image, Package_schedule, Package_service, Package_unavailable_date, Payment_method, Cart, Booking, Review, Thumbnail
 
 @admin.register(Guide_register_info)
 class GuideRegisterInfoAdmin(admin.ModelAdmin):
@@ -61,3 +61,7 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(Thumbnail)
 class ThumbnailAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'image', 'order_number')
+
+@admin.register(Commission)
+class ThumbnailAdmin(admin.ModelAdmin):
+    list_display = ('id', 'type', 'percentage_of_sale_price')

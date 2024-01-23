@@ -35,6 +35,14 @@ class Category (models.Model):
             default = uuid.uuid4,
             editable = False)
     name = models.CharField(max_length=30)
+
+class Commission(models.Model):
+    id = models.UUIDField(
+            primary_key = True,
+            default = uuid.uuid4,
+            editable = False)
+    type = models.CharField(max_length=30, unique=True)
+    percentage_of_sale_price = models.FloatField()
     
 class Package (models.Model):
     id = models.UUIDField(
@@ -44,11 +52,12 @@ class Package (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
     description = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, default=None)
     discount = models.FloatField(default=0.00)
     tour_place_coordinate = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     video_url = models.CharField(max_length=255, null=True, blank=True)
+    commission = models.ForeignKey(Commission, on_delete=models.SET_NULL, null=True, default=None)
     is_close = models.BooleanField(default=False)
     
 class Package_image (models.Model):

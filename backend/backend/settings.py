@@ -243,6 +243,6 @@ SIMPLE_JWT = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-#------------- Stripe -------------------
-STRIPE_PUBLIC_KEY = 'your-public-key'
-STRIPE_SECRET_KEY = 'your-secret-key'
+#------------- Stripe Key -------------------#
+STRIPE_PUBLIC_KEY = env('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
