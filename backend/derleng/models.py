@@ -106,12 +106,13 @@ class Payment_method (models.Model):
     holder_name = models.CharField(max_length=255)
     brand = models.CharField(max_length=30)
     last4 = models.CharField(max_length=4)
+    customer_id = models.CharField(max_length=255)
     payment_method_id = models.CharField(max_length=255)
     exp_month = models.IntegerField()
     exp_year = models.IntegerField()
 
-    def __str__(self):
-        return f"**** **** **** {self.last4}"
+    # def __str__(self):
+    #     return f"**** **** **** {self.last4}"
 
     
 class Cart (models.Model):
