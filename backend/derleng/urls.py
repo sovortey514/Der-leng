@@ -2,14 +2,19 @@ from django.urls import include, path
 
 from derleng.views import Payment_methodView
 
-from .views import ThumbnailView, PackageView, ReviewView, CategoryView
+from .views import ThumbnailView, PackageView, ReviewView, CategoryView , CartView
 
 from rest_framework.routers import DefaultRouter
+
+from django.views.decorators.csrf import csrf_exempt
+
 
 viewsetRouter = DefaultRouter()
 viewsetRouter.register(r'packages', PackageView.PackageViewSet, basename='package')
 
 urlpatterns = [
+    path('cart', CartView.CartAPIView.as_view(), name='cart'),
+    path('cart/<uuid:pk>', CartView.CartAPIView.as_view(), name='cart'),
     path('', include(viewsetRouter.urls), name='viewset'),
     path('thumbnails' , ThumbnailView.ThumbnailAPIView.as_view() , name=''),
     path('thumbnails/<uuid:pk>' , ThumbnailView.ThumbnailAPIView.as_view() , name=''),
