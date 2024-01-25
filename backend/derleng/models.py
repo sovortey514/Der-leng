@@ -14,7 +14,7 @@ class Guide_register_info(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     fullname_khmer = models.CharField(max_length=30)
     fullname_english = models.CharField(max_length=30)
-    cv = models.FileField(upload_to='files/guide_register_info/')
+    cv = models.FileField(upload_to='files/guide_register_info/', max_length=1000)
     phone = models.CharField(max_length=20)
     address = models.CharField(max_length=255)
     tour_place_coordinate = models.CharField(max_length=30)
@@ -25,10 +25,10 @@ class Profile_image (models.Model):
             default = uuid.uuid4,
             editable = False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = image = models.ImageField(upload_to='images/profile_images')
+    image = image = models.ImageField(upload_to='images/profile_images', max_length=1000)
     type = models.CharField(max_length=50, default='profile', choices=(('profile', 'profile'), ('cover', 'cover'),))
     is_active = models.BooleanField(default=True)
-    created_at = models.TimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 #====================================================> Package Info
 
@@ -134,7 +134,7 @@ class Booking (models.Model):
             editable = False)
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     total_price = models.FloatField()
-    created_at = models.TimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class Booking_details(models.Model):
     id = models.UUIDField(
@@ -193,7 +193,7 @@ class Review (models.Model):
         ]
     )
     comment = models.CharField(max_length=100)
-    created_at = models.TimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     
 class Thumbnail (models.Model):
     id = models.UUIDField(
