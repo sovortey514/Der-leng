@@ -39,6 +39,9 @@ class Category (models.Model):
             editable = False)
     name = models.CharField(max_length=30)
 
+    def __str__(self) -> str:
+        return f'{self.name}'
+
 class Commission(models.Model):
     id = models.UUIDField(
             primary_key = True,
@@ -62,6 +65,9 @@ class Package (models.Model):
     video_url = models.CharField(max_length=255, null=True, blank=True)
     commission = models.ForeignKey(Commission, on_delete=models.SET_NULL, null=True, default=None)
     is_close = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return f'{self.name}'
     
 class Package_image (models.Model):
     id = models.UUIDField(
@@ -115,6 +121,9 @@ class Payment_method (models.Model):
     payment_method_id = models.CharField(max_length=255)
     exp_month = models.IntegerField()
     exp_year = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f'**** **** **** {self.last4}'
     
 class Cart (models.Model):
     id = models.UUIDField(
@@ -202,3 +211,6 @@ class Thumbnail (models.Model):
             editable = False)
     name = models.CharField(max_length=50)
     image = models.ImageField(upload_to='images/thumbnails/')
+
+    def __str__(self) -> str:
+        return f'{self.name}'

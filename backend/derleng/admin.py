@@ -9,7 +9,7 @@ class GuideRegisterInfoAdmin(admin.ModelAdmin):
 
 @admin.register(Profile_image)
 class ProfileImageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'type', 'is_active', 'created_at')
+    list_display = ('id', 'user','image', 'type', 'is_active', 'created_at')
     list_filter = ('is_active', 'created_at' , 'type')
 
 @admin.register(Category)

@@ -1,0 +1,189 @@
+[
+    {
+        "model": "authentication.user_role",
+        "pk": "525c7407-dc9e-4220-9a89-9ad6ae00e7f5",
+        "fields": {
+            "name": "admin",
+            "description": "He's everything"
+        }
+    },
+    {
+        "model": "authentication.user_role",
+        "pk": "c0249bc4-80bc-4080-aeff-1a285ac0f3af",
+        "fields": {
+            "name": "staff",
+            "description": "employee"
+        }
+    },
+    {
+        "model": "authentication.user_role",
+        "pk": "e2ead997-e584-4cfd-93f3-646d98e7c411",
+        "fields": {
+            "name": "customer",
+            "description": ""
+        }
+    },
+    {
+        "model": "authentication.user",
+        "pk": "38a42599-1550-4a4a-9de9-a7caf8068433",
+        "fields": {
+            "password": "pbkdf2_sha256$720000$3OUSLpRudvSa8vvc9pEDf1$10QRin+N+yHWG4SG8DwafYqSDiEn59EBRNV/4iVB8bM=",
+            "last_login": "2024-01-25T15:51:44Z",
+            "is_superuser": true,
+            "username": "derleng",
+            "first_name": "",
+            "last_name": "",
+            "email": "derleng@123.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2024-01-25T15:51:38Z",
+            "fullname": "Mr Derleng",
+            "role": "525c7407-dc9e-4220-9a89-9ad6ae00e7f5",
+            "phone": "0963180249",
+            "registration_method": "email",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "authentication.user",
+        "pk": "3c807f9b-7e76-4bcc-832c-8a0b2864794f",
+        "fields": {
+            "password": "pbkdf2_sha256$720000$MVYorx2VwnKIwicOBbdN2Y$kaLLLx8A7h/SQUkm/qX5/Mwc2nwcdQERgFI/16zkVlk=",
+            "last_login": "2024-01-25T15:53:36Z",
+            "is_superuser": true,
+            "username": "vendara",
+            "first_name": "",
+            "last_name": "",
+            "email": "vendara@123.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2024-01-25T15:52:48Z",
+            "fullname": "VEN Dara",
+            "role": "525c7407-dc9e-4220-9a89-9ad6ae00e7f5",
+            "phone": "0963180249",
+            "registration_method": "email",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "derleng.category",
+        "pk": "6d8c7924-36b9-4d12-aa81-488b35efa5aa",
+        "fields": {
+            "name": "sea"
+        }
+    },
+    {
+        "model": "derleng.commission",
+        "pk": "613b6caf-7bee-4d6d-a58a-c1641eb21a4f",
+        "fields": {
+            "type": "free",
+            "percentage_of_sale_price": 0.0
+        }
+    },
+    {
+        "model": "derleng.commission",
+        "pk": "cfaec487-6a90-4992-9b86-651a2f588b90",
+        "fields": {
+            "type": "normal",
+            "percentage_of_sale_price": 5.0
+        }
+    },
+    {
+        "model": "derleng.package",
+        "pk": "b658776b-135d-40ba-a4e5-01f089548a92",
+        "fields": {
+            "user": "3c807f9b-7e76-4bcc-832c-8a0b2864794f",
+            "name": "Preah Vihea Temple",
+            "description": "Preah Vihea Temple is a beautiful place.",
+            "category": "6d8c7924-36b9-4d12-aa81-488b35efa5aa",
+            "discount": 0.0,
+            "tour_place_coordinate": "{\"lng\":100, \"lat\":200}",
+            "address": "Preah Vihea",
+            "video_url": "https://www.youtube.com/watch?v=2J5uRcaiZcE&list=RD2J5uRcaiZcE&start_radio=1&ab_channel=14FAM",
+            "commission": "cfaec487-6a90-4992-9b86-651a2f588b90",
+            "is_close": false
+        }
+    },
+    {
+        "model": "derleng.package_image",
+        "pk": "36903083-dd2f-4849-b786-6ff4290cda23",
+        "fields": {
+            "package": "b658776b-135d-40ba-a4e5-01f089548a92",
+            "image": "images/package_images/Angkor_Wat_Temple.jpg"
+        }
+    },
+    {
+        "model": "derleng.package_image",
+        "pk": "5d98c6fb-7443-444e-b880-5f55c88548e0",
+        "fields": {
+            "package": "b658776b-135d-40ba-a4e5-01f089548a92",
+            "image": "images/package_images/GettyImages-865119770.jpg"
+        }
+    },
+    {
+        "model": "derleng.package_image",
+        "pk": "f5a10c97-a185-46e8-87b0-d828907d1903",
+        "fields": {
+            "package": "b658776b-135d-40ba-a4e5-01f089548a92",
+            "image": "images/package_images/16013937538_336f675b6d_o-scaled.jpg"
+        }
+    },
+    {
+        "model": "derleng.package_schedule",
+        "pk": "4eded0a6-ce28-4039-8fb2-a044f63730b8",
+        "fields": {
+            "package": "b658776b-135d-40ba-a4e5-01f089548a92",
+            "destination": "Preah Vihea Mt",
+            "start_time": "06:30:00",
+            "end_time": "06:30:00"
+        }
+    },
+    {
+        "model": "derleng.package_schedule",
+        "pk": "b99025e4-08e8-43c0-bfb4-efb3999bfd5a",
+        "fields": {
+            "package": "b658776b-135d-40ba-a4e5-01f089548a92",
+            "destination": "Preah Vihea Temple",
+            "start_time": "06:30:00",
+            "end_time": "06:30:00"
+        }
+    },
+    {
+        "model": "derleng.package_service",
+        "pk": "648a9eae-5690-4578-a782-f2d9184f5153",
+        "fields": {
+            "detail": "free food",
+            "package": "b658776b-135d-40ba-a4e5-01f089548a92",
+            "price": 10.0,
+            "is_close": false
+        }
+    },
+    {
+        "model": "derleng.package_service",
+        "pk": "76f94119-3f6e-4778-94cf-4e8491a4c0ba",
+        "fields": {
+            "detail": "free car",
+            "package": "b658776b-135d-40ba-a4e5-01f089548a92",
+            "price": 10.0,
+            "is_close": false
+        }
+    },
+    {
+        "model": "derleng.package_unavailable_date",
+        "pk": "7ab5c0d8-ae04-4b72-b9e8-1ed646e924c9",
+        "fields": {
+            "package": "b658776b-135d-40ba-a4e5-01f089548a92",
+            "unavailable_at": "2024-01-15"
+        }
+    },
+    {
+        "model": "derleng.package_unavailable_date",
+        "pk": "b09a04b1-cbd9-445a-b655-37341e8d4ced",
+        "fields": {
+            "package": "b658776b-135d-40ba-a4e5-01f089548a92",
+            "unavailable_at": "2024-01-14"
+        }
+    }
+]

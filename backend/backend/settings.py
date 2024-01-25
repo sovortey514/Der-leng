@@ -112,9 +112,13 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": env('DB_ENGINE'),
+        "NAME": env('DB_NAME'),
+        "USER": env('DB_USER'),
+        "PASSWORD": env('DB_PASSWORD'),
+        "HOST": env('DB_HOST'),
+        "PORT": env('DB_PORT'),
     }
 }
 
@@ -247,7 +251,7 @@ SIMPLE_JWT = {
 #===========================> Media Dir and File <===========================
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024 # 10 Mb limit
+FILE_UPLOAD_MAX_MEMORY_SIZE = env('FILE_UPLOAD_MAX_MEMORY_SIZE') * 1024 * 1024 # 10 Mb limit
 
 #===========================> Stripe Key <===========================
 STRIPE_PUBLIC_KEY = env('STRIPE_PUBLISHABLE_KEY')
