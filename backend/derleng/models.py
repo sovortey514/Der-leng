@@ -124,8 +124,8 @@ class Cart (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     service = models.ForeignKey(Package_service, on_delete=models.CASCADE)
     customer_ammount = models.IntegerField()
-    booking_date = models.TimeField()
-    created_at = models.TimeField(auto_now_add=True)
+    booking_date = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     
 class Booking (models.Model):
     id = models.UUIDField(

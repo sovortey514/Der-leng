@@ -5,10 +5,10 @@ __pycache__/
 *.pyd
 
 # Django
-# *.sqlite3
-# db.sqlite3
-# /media/
-# /static/
+*.sqlite3
+db.sqlite3
+/media/
+/static/
 
 # IDE/Editor Files
 .vscode/
