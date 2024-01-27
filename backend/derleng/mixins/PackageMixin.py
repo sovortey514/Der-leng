@@ -1,4 +1,5 @@
 from django.forms import ValidationError
+from backend.settings import MEDIA_URL
 from derleng.models import Package_image, Package_schedule, Package_service, Package_unavailable_date
 from derleng.serializers import Package_imageSerializer, Package_scheduleSerializer, Package_serviceSerializer, Package_unavailable_dateSerializer
 
@@ -14,6 +15,15 @@ class PackageMixin:
         for delete_image in delete_images:
             Package_image.objects.filter(pk=delete_image.get("id")).delete()
 
+    def assign_cover_image(self, package_instance, cover, type):
+        image_data = {}
+        image_data["image"] = cover
+        image_data["type"] = type
+        image_data['package'] = package_instance.id
+        package_image_serializer = Package_imageSerializer(data=image_data)
+        package_image_serializer.is_valid(raise_exception=True)
+        package_image_serializer.save()
+        
     def assign_image(self, package_instance, images):
 
         package_image_number = Package_image.objects.filter(package=package_instance).count()
@@ -43,6 +53,7 @@ class PackageMixin:
         for service_data in services:
             service_instance = Package_service.objects.filter(id=service_data.get("id")).first()
             service_data['package'] = package_instance.id # Can not be an instance because no read_only in serializer that fk
+            service_data['price'] = service_data["price"] * 100 # Convert dollar to cent
             package_service_serializer = Package_serviceSerializer(instance=service_instance, data=service_data, partial=True)
             package_service_serializer.is_valid(raise_exception=True)
             package_service_serializer.save()
@@ -78,17 +89,3 @@ class PackageMixin:
             package_unavailable_date_serializer = Package_unavailable_dateSerializer(instance=unavailable_date_instance, data=unavailable_date_data, partial=True)
             package_unavailable_date_serializer.is_valid(raise_exception=True)
             package_unavailable_date_serializer.save()
-
-    # def assign_schedule(self, package_instance, schedules):
-    #     for schedule_data in schedules:
-    #         schedule_data['package'] = package_instance.id # Can not be an instance because no read_only in serializer that fk
-    #         package_schedule_serializer = Package_scheduleSerializer(data=schedule_data)
-    #         package_schedule_serializer.is_valid(raise_exception=True)
-    #         package_schedule_serializer.save()
-
-    # def assign_unavailable_date(self, package_instance, unavailable_dates):
-    #     for unavailable_date_data in unavailable_dates:
-    #         unavailable_date_data['package'] = package_instance.id # Can not be an instance because no read_only in serializer that fk
-    #         package_unavailable_date_serializer = Package_unavailable_dateSerializer(data=unavailable_date_data)
-    #         package_unavailable_date_serializer.is_valid(raise_exception=True)
-    #         package_unavailable_date_serializer.save()

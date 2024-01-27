@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from derleng.views import Payment_methodView
+from derleng.views import BookingView, Payment_methodView
 
 from .views import ThumbnailView, PackageView, ReviewView, CategoryView , CartView
 
@@ -25,4 +25,6 @@ urlpatterns = [
     path('test-payment/', Payment_methodView.test_payment, name="test_payment"),
     path('test-payment_intent', Payment_methodView.test_payment_intent, name="test_payment"),
     path('payments', Payment_methodView.Payment_methodAPIView.as_view(), name='payment_method'),
+    path('payments/<uuid:pk>', Payment_methodView.Payment_methodAPIView.as_view(), name='payment_method'),
+    path('booking_package', BookingView.BookingPackageAPIView.as_view(), name='booking_package'),
 ]

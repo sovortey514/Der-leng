@@ -19,7 +19,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_id', 'description', 'category_id', 'discount', 'address', 'video_url')
+    list_display = ('id', 'user_id', 'description', 'category_id', 'percentage_discount', 'address', 'video_url')
     search_fields = ( 'description' , )
 
 @admin.register(Package_image)
@@ -42,7 +42,7 @@ class PackageUnavailableDateAdmin(admin.ModelAdmin):
 
 @admin.register(Payment_method)
 class PaymentMethodAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'type', 'holder_name', 'brand', 'last4', 'payment_method_id', 'exp_month', 'exp_year')
+    list_display = ('id', 'user', 'type', 'holder_name', 'brand', 'last4', 'stripe_customer_id', 'stripe_payment_method_id', 'exp_month', 'exp_year', "is_active")
     search_fields = ( 'holder_name' ,)
     list_filter=('type' ,)
 
@@ -56,15 +56,15 @@ class BookingAdmin(admin.ModelAdmin):
 
 @admin.register(Booking_details)
 class Booking_detailsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'card', 'booking', 'unit_price', 'discount', 'is_accepted', 'created_at')
+    list_display = ('id', 'card', 'booking', 'unit_price', 'percentage_discount', 'is_accepted', 'created_at')
 
 @admin.register(Customer_payments)
 class Customer_paymentsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer', 'booking', 'amount', 'amount_received', 'currency', 'stripe_customer_id', 'stripe_payment_method_id', 'status', 'created')
+    list_display = ('id', 'customer', 'booking', 'amount', 'amount_received', 'currency', 'payment_method', 'status', 'created')
 
 @admin.register(Seller_transactions)
 class Seller_transactionsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'seller', 'booking_details', 'commission', 'amount', 'amount_received', 'currency', 'stripe_admin_account_id', 'stripe_payment_method_id', 'status', 'created')
+    list_display = ('id', 'seller', 'booking_details', 'commission', 'amount', 'amount_received', 'currency', 'stripe_admin_account_id', 'payment_method', 'status', 'created')
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):

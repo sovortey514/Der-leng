@@ -1,15 +1,24 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from authentication.permissions import UserRolePermission
 from derleng.models import Cart, Package_service
-from derleng.serializers import CartSerializer
+from derleng.serializers import CartSerializer, MediumCartSerializer
 from rest_framework.permissions import IsAuthenticated
-# from django.views.decorators.csrf import csrf_exempt
 
 
 class CartAPIView(APIView):
     permission_classes = [IsAuthenticated]
-    # @csrf_exempt
+
+    def get(self , request):
+        try:
+            cartList = request.user.cart_set.all()
+            serializer = MediumCartSerializer(cartList , many = True)
+            
+            return Response(serializer.data , status=status.HTTP_200_OK)
+        except Exception as error:
+            return Response( {'error' : str(error)} , status=status.HTTP_400_BAD_REQUEST)
+
     def post(self, request):
         try:
             user = request.user
@@ -26,14 +35,6 @@ class CartAPIView(APIView):
             return Response(response_data, status=status.HTTP_200_OK)
         except Exception as error:
             return Response({'error': str(error)}, status=status.HTTP_404_NOT_FOUND)
-        
-    def get(self , request):
-        try:
-            cartList = Cart.objects.all()
-            serializer = CartSerializer(cartList , many = True)
-            return Response(serializer.data , status=status.HTTP_200_OK)
-        except Exception as error:
-            return Response( {'error' : str(error)} , status=status.HTTP_400_BAD_REQUEST)
 
     def put (self , request , pk ):
         try:

@@ -1,0 +1,60 @@
+#=========================================> Django
+from django.db import transaction
+
+#=========================================> Python
+import json
+from django.forms import ValidationError
+
+#=========================================> DRF
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
+#=========================================> Local
+from derleng.mixins import BookingMixin
+from derleng.models import Booking, Payment_method
+from derleng.mixins.Payment_methodMixin import create_payment_intent
+from derleng.serializers import BookingSerializer, Customer_paymentsSerializer
+
+class BookingPackageAPIView(APIView, BookingMixin.BookingMixin):
+    permission_classes = [IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request):
+        try:
+            request_data = request.data.copy()
+            user_instance = request.user
+            booking_instance = Booking.objects.create(customer=user_instance, total_price=0, currency="usd")
+
+            payment_method_id = request_data.get("payment_method", "")
+            if not payment_method_id:
+                raise ValidationError({"payment_method": "Payment_method's id is rerequired."})
+
+            carts = json.loads(request_data.get("carts", "[]"))
+            if not carts:
+                raise ValidationError({"carts": "Cart is rerequired."})
+            
+            total_price = self.store_booking_details(carts=carts, booking_id=booking_instance.id)
+            booking_instance.total_price = total_price
+            booking_instance.save()
+
+            payment_inst = Payment_method.objects.get(pk=payment_method_id)
+            payment_intent = create_payment_intent(payment_inst.stripe_customer_id, payment_inst.stripe_payment_method_id, total_price, currency="usd")
+
+            customer_payment_instance = self.store_customer_payment(user_instance.id, booking_instance.id, payment_inst.id, payment_intent)
+
+            response = {
+                "status": "succeeded",
+                "message": "booking successfully.",
+                "data": {
+                    "booking": BookingSerializer(booking_instance).data,
+                    "customer_payment_record": Customer_paymentsSerializer(customer_payment_instance).data
+                }
+            }
+
+            
+            return Response(response, status=status.HTTP_200_OK)
+        except Exception as errers:
+            transaction.set_rollback(True)
+            return Response({"errers": str(errers)}, status=status.HTTP_400_BAD_REQUEST)
