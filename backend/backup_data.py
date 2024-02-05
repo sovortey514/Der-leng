@@ -21,14 +21,17 @@ if not os.path.exists(backup_dir):
 existing_backups = [f for f in os.listdir(backup_dir) if f.endswith(file_pattern)]
 existing_backups.sort()
 
-# Determine the next backup file name
+# Rename the latest backup to "sequenceNumber_data.json"
 if existing_backups:
-    last_backup_with_sequence_name = existing_backups[-2]
+    if len(existing_backups) == 1 :
+        last_backup_with_sequence_name = f"0000_{file_pattern}"
+    else:
+        last_backup_with_sequence_name = existing_backups[-2]
+        
     last_backup = existing_backups[-1]
     sequence_number = int(last_backup_with_sequence_name.split("_")[0]) + 1
     last_backup_name = f"{sequence_number:04d}_{file_pattern}"
 
-    # Rename the latest backup to "latest_data.json"
     old_last_backup_path = os.path.join(backup_dir, last_backup)
     new_name_last_backup_path = os.path.join(backup_dir, last_backup_name)
     os.rename(old_last_backup_path, new_name_last_backup_path)

@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
     'authentication',
     'derleng',
-
+    
     'rest_framework',
     'rest_framework_simplejwt',
     'oauth2_provider',
@@ -75,11 +75,15 @@ ROOT_URLCONF = 'backend.urls'
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173"
+    env("FRONEND_TRUSTED_ORIGINS_1"),
+    env("FRONEND_TRUSTED_ORIGINS_2"),
+    env("FRONEND_TRUSTED_ORIGINS_3"),
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173"
+    env("FRONEND_TRUSTED_ORIGINS_1"),
+    env("FRONEND_TRUSTED_ORIGINS_2"),
+    env("FRONEND_TRUSTED_ORIGINS_3"),
 ]
 
 TEMPLATES = [
@@ -251,8 +255,13 @@ SIMPLE_JWT = {
 #===========================> Media Dir and File <===========================
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-FILE_UPLOAD_MAX_MEMORY_SIZE = env('FILE_UPLOAD_MAX_MEMORY_SIZE') * 1024 * 1024 # 10 Mb limit
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024 # 10 Mb limit
 
 #===========================> Stripe Key <===========================
 STRIPE_PUBLIC_KEY = env('STRIPE_PUBLISHABLE_KEY')
 STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
+
+#===========================> Celery Conf <===========================
+
+LIMIT_TIME_FOR_BOOKING_ACCEPT = 1
+

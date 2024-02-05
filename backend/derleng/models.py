@@ -48,7 +48,7 @@ class Commission(models.Model):
             default = uuid.uuid4,
             editable = False)
     type = models.CharField(max_length=30, unique=True)
-    percentage_of_sale_price = models.FloatField()
+    percentage_of_sale_price = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     
 class Package (models.Model):
     id = models.UUIDField(
@@ -59,7 +59,7 @@ class Package (models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, default=None)
-    discount = models.FloatField(default=0.00)
+    percentage_discount = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     tour_place_coordinate = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     video_url = models.CharField(max_length=255, null=True, blank=True)
@@ -76,6 +76,7 @@ class Package_image (models.Model):
             editable = False)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images/package_images/', max_length=500)
+    type = models.CharField(max_length=30, default="normal", choices=[("normal","normal"), ("thumbnail","thumbnail"), ("cover","cover")])
     
 class Package_schedule (models.Model):
     id = models.UUIDField(
@@ -94,7 +95,8 @@ class Package_service (models.Model):
             editable = False)
     detail = models.CharField(max_length=100)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
-    price = models.FloatField()
+    price = models.IntegerField()
+    currency = models.CharField(max_length=3, default="usd")
     is_close = models.BooleanField(default=False)
 
 class Package_unavailable_date(models.Model):
@@ -104,6 +106,22 @@ class Package_unavailable_date(models.Model):
             editable = False)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     unavailable_at = models.DateField()
+
+class Review (models.Model):
+    id = models.UUIDField(
+            primary_key = True,
+            default = uuid.uuid4,
+            editable = False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    rating = models.IntegerField(
+        validators=[
+            MinValueValidator(0, message="Rating must be greater than or equal to 0."),
+            MaxValueValidator(5, message="Rating must be less than or equal to 5.")
+        ]
+    )
+    comment = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
     
 #====================================================> Payment
     
@@ -117,13 +135,25 @@ class Payment_method (models.Model):
     holder_name = models.CharField(max_length=30)
     brand = models.CharField(max_length=30)
     last4 = models.CharField(max_length=4)
-    customer_id = models.CharField(max_length=255)
-    payment_method_id = models.CharField(max_length=255)
+    stripe_customer_id = models.CharField(max_length=255)
+    stripe_payment_method_id = models.CharField(max_length=255)
     exp_month = models.IntegerField()
     exp_year = models.IntegerField()
+    is_active = models.BooleanField(default=True)
+    is_default = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return f'**** **** **** {self.last4}'
+    
+    def save(self, *args, **kwargs):
+        Payment_method.objects.filter(user=self.user).update(is_default=False)
+        
+        if not self.is_default:
+            self.is_default = True
+
+        super().save(*args, **kwargs)
+    
+#====================================================> Booking Package
     
 class Cart (models.Model):
     id = models.UUIDField(
@@ -142,7 +172,8 @@ class Booking (models.Model):
             default = uuid.uuid4,
             editable = False)
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    total_price = models.FloatField()
+    total_price = models.IntegerField()
+    currency = models.CharField(max_length=3, default="usd")
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Booking_details(models.Model):
@@ -150,12 +181,16 @@ class Booking_details(models.Model):
             primary_key = True,
             default = uuid.uuid4,
             editable = False)
-    card = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True, blank=True)
+    cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True, blank=True)
     booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, blank=True)
-    unit_price = models.FloatField()
-    discount = models.FloatField(default=0)
+    unit_price = models.IntegerField()
+    currency = models.CharField(max_length=3, default="usd")
+    percentage_discount = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     is_accepted = models.BooleanField(default=False)
+    is_closed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+#====================================================> Payment Record
 
 class Customer_payments(models.Model):
     id = models.UUIDField(
@@ -163,12 +198,11 @@ class Customer_payments(models.Model):
             default = uuid.uuid4,
             editable = False)
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, blank=True)
-    amount = models.FloatField()
-    amount_received = models.FloatField()
+    booking = models.OneToOneField(Booking, on_delete=models.SET_NULL, null=True, blank=True)
+    amount = models.IntegerField()
+    amount_received = models.IntegerField()
     currency = models.CharField(max_length = 3)
-    stripe_customer_id = models.CharField(max_length=255)
-    stripe_payment_method_id = models.CharField(max_length=255)
+    payment_method = models.ForeignKey(Payment_method, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(max_length=30)
     created = models.BigIntegerField()
 
@@ -178,31 +212,30 @@ class Seller_transactions(models.Model):
             default = uuid.uuid4,
             editable = False)
     seller = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    booking_details = models.ForeignKey(Booking_details, on_delete=models.SET_NULL, null=True, blank=True)
-    commission = models.FloatField()
-    amount = models.FloatField()
-    amount_received = models.FloatField()
+    booking_details = models.OneToOneField(Booking_details, on_delete=models.SET_NULL, null=True, blank=True)
+    commission = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    amount = models.IntegerField()
+    amount_received = models.IntegerField()
     currency = models.CharField(max_length=3)
-    stripe_admin_account_id = models.CharField(max_length=255)
-    stripe_payment_method_id = models.CharField(max_length=255)
+    payment_method = models.ForeignKey(Payment_method, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(max_length=30)
     created = models.BigIntegerField()
-    
-class Review (models.Model):
+
+class Customer_refunds(models.Model):
     id = models.UUIDField(
             primary_key = True,
             default = uuid.uuid4,
             editable = False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    package = models.ForeignKey(Package, on_delete=models.CASCADE)
-    rating = models.IntegerField(
-        validators=[
-            MinValueValidator(0, message="Rating must be greater than or equal to 0."),
-            MaxValueValidator(5, message="Rating must be less than or equal to 5.")
-        ]
-    )
-    comment = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    booking_details = models.OneToOneField(Booking_details, on_delete=models.SET_NULL, null=True, blank=True)
+    amount = models.IntegerField()
+    amount_refunded = models.IntegerField()
+    currency = models.CharField(max_length=3)
+    stripe_admin_account_id = models.CharField(max_length=255)
+    payment_method = models.ForeignKey(Payment_method, on_delete=models.SET_NULL, null=True, blank=True)
+    description = models.CharField(max_length=255)
+    status = models.CharField(max_length=30)
+    created = models.BigIntegerField()
     
 class Thumbnail (models.Model):
     id = models.UUIDField(

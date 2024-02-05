@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from derleng.models import Commission, Package, Category, Package_image
 from authentication.permissions import IsAdminOrStaffOrTourGuideOrReadOnly
-from derleng.serializers import BasicPackageSerializer, Package_scheduleSerializer, Package_serviceSerializer, Package_unavailable_dateSerializer, PackageSerializer, Package_imageSerializer
+from derleng.serializers import BasicPackageSerializer, MediumPackageSerializer, Package_scheduleSerializer, Package_serviceSerializer, Package_unavailable_dateSerializer, PackageSerializer, Package_imageSerializer
 from derleng.mixins import PackageMixin
 
 
@@ -16,7 +16,7 @@ import json
 
 class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
     queryset = Package.objects.all()
-    serializer_class = PackageSerializer
+    serializer_class = MediumPackageSerializer
     permission_classes = [IsAdminOrStaffOrTourGuideOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = '__all__'
@@ -33,9 +33,19 @@ class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
             package_serializer.is_valid(raise_exception=True)
             package_instance = package_serializer.save()
 
+            thumbnail = request_data.get("thumbnail", '')
+            if not thumbnail:
+                raise ValidationError({"thumbnail": "Thumbnail image is required."})
+            self.assign_cover_image(package_instance, thumbnail, "thumbnail")
+            
+            cover = request_data.get("cover", '')
+            if not cover:
+                raise ValidationError({"cover": "Cover image is required."})
+            self.assign_cover_image(package_instance, cover, "cover")
+
             images = request_data.getlist("images")
             if not images or len(images) > 6:
-                raise ValidationError({"images": "package's images is rerequired at least one and at most six."})
+                raise ValidationError({"images": "package's images is required at least one and at most six."})
             
             self.assign_image(package_instance=package_instance, images=images)
 
@@ -71,6 +81,13 @@ class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
             package_serializer.is_valid(raise_exception=True)
             package_instance = package_serializer.save()
 
+            thumbnail = request_data.get("thumbnail", '')
+            if thumbnail:
+                self.assign_cover_image(package_instance, thumbnail, "thumbnail")
+
+            cover = request_data.get("cover", '')
+            if cover:
+                self.assign_cover_image(package_instance, cover, "cover")
 
             images = request_data.getlist("images")
             if images:

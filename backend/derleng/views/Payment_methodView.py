@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 
 #===============================================> Local Import
 from backend.settings import STRIPE_SECRET_KEY
+from derleng.mixins import Payment_methodMixin
 from derleng.models import Payment_method
 from derleng.serializers import BasicPayment_methodSerializer, Payment_methodSerializer
 
@@ -18,7 +19,7 @@ import stripe
 
 stripe.api_key = STRIPE_SECRET_KEY
 
-class Payment_methodAPIView(APIView):
+class Payment_methodAPIView(APIView, Payment_methodMixin.Payment_methodMixin):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -41,53 +42,14 @@ class Payment_methodAPIView(APIView):
         except Exception as error:
             return Response({"error": str(error)}, status=status.HTTP_400_BAD_REQUEST)
         
-    def store_payment_method(self, request_data):
-        serializer = Payment_methodSerializer(data=request_data)
-        serializer.is_valid(raise_exception=True)
-        return serializer.save()
-    
-    def save_stripe_info(self, request_data, user):
-        email = f'{user.username}@derleng.com'
-        name = user.username
-        payment_method_id = request_data['payment_method_id']
-
-        # Checking if customer already exist
-        customer_data = stripe.Customer.list(email=email).data
-
-        if len(customer_data) == 0:
-            customer = stripe.Customer.create(email=email, name=name, payment_method=payment_method_id)
-        else:
-            customer = customer_data[0]
-
-            # Check if the payment method is already associated with the customer
-            existing_payment_methods = stripe.PaymentMethod.list(
-                customer=customer.id,
-                type=request_data["type"]
-            ).data
-
-            if payment_method_id not in [existing_payment_method.id for existing_payment_method in existing_payment_methods]:
-                stripe.PaymentMethod.attach(
-                    payment_method_id,
-                    customer=customer.id
-                )
-
-                # Update the default payment method to the newly attached payment method
-                stripe.Customer.modify(
-                    customer.id,
-                    invoice_settings={
-                        'default_payment_method': payment_method_id,
-                    },
-                )
-
-            else:
-                error = "Payment method already associated with the customer."
-                raise ValueError(error)
-        
-        # Store payment method to database if associate payment with stripe success
-        request_data['customer_id'] = customer.id
-        payment_method_instance = self.store_payment_method(request_data=request_data)
-
-        return payment_method_instance
+    def delete(self, request, pk):
+        try:
+            instance = Payment_method.objects.get(pk=pk)
+            stripe.PaymentMethod.detach(instance.payment_method_id)
+            instance.delete()
+            return Response({"message": "Payment method deleted sucessfully."}, status=status.HTTP_200_OK)
+        except Exception as error:
+            return Response({"error": str(error)}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def test_payment(request):
@@ -104,22 +66,27 @@ def test_payment_intent(request):
         amount = 40*100
         customer_id = "cus_PQfLqxAVY1kcVm"
         Payment_method_id = "pm_1OboNgEhnoYmMdGFVSoexeDs"
-        payment = create_payment_intent(customer_id=customer_id, payment_method_id=Payment_method_id,amount=amount)
+        payment = Payment_methodMixin.create_payment_intent(customer_id=customer_id, payment_method_id=Payment_method_id,amount=amount)
         return Response(data=payment, status=status.HTTP_200_OK)
     except Exception as error:
         return Response({"error": str(error)}, status=status.HTTP_400_BAD_REQUEST)
+        
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-def create_payment_intent(customer_id, payment_method_id, amount, currency='usd'):
-    intent = stripe.PaymentIntent.create(
-        amount=amount,
-        currency=currency,
-        customer=customer_id,
-        payment_method=payment_method_id,
-        # confirmation_method='manual',
-        confirm=True,
-        # return_url='http://127.0.0.1:8000/admin/derleng/booking/',
-        automatic_payment_methods={'enabled': True, 'allow_redirects': 'never'}
+@api_view(['POST'])
+def create_refund(request):
+    # refund = stripe.Refund.create(
+    # payment_intent="pi_3OejQHEhnoYmMdGF0HxjIYFe",
+    # amount=10000
+    # )
+
+    stripe.AccountLink.create(
+        account='{{CONNECTED_ACCOUNT_ID}}',
+        refresh_url="https://example.com/reauth",
+        return_url="https://example.com/return",
+        type="account_onboarding",
     )
 
-    return intent
-        
+
+    return Response(data=refund)

@@ -2,20 +2,20 @@ import os
 import django
 from django.core.management import call_command
 
+seed_file_path = "./database/latest_initail_data.json"
+
 # Set the Django settings module
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 
 # Set up Django
 django.setup()
 
-# Flush the database
 print("[...............................   Flushing database   ...............................]")
-call_command("flush", "--noinput")
+# call_command("flush", "--noinput")     # No verify
+call_command("flush")
  
-#  Apply datab  ase migrations
 print("[...............................   Migrating database  ...............................] ")
 call_command("migrate")
 
-# Load initial data using loaddata command
 print("[...............................   Seeding database    ...............................]" )
-call_command("loaddata", "./database/latest_backup_data.json")
+call_command("loaddata", seed_file_path)
