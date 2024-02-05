@@ -10,3 +10,11 @@ pip install pipreqs for write requirement.txt
 pipreqs /path/to/project
 
 pip install django-filter
+
+pip install stripe
+
+pip install --upgrade setuptools
+
+pip install django-seed
+
+pip install psycopg2

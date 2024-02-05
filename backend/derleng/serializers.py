@@ -48,6 +48,11 @@ class PackageSerializer(serializers.ModelSerializer):
         model = Package
         fields = '__all__'
         
+class BasicPayment_methodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment_method
+        exclude = ('payment_method_id', 'customer_id')
+
 class Payment_methodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment_method
@@ -72,4 +77,3 @@ class ThumbnailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Thumbnail
         fields = '__all__'
-        

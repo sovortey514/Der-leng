@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Guide_register_info, Profile_image, Category, Package, Package_image, Package_schedule, Package_service, Package_unavailable_date, Payment_method, Cart, Booking, Review, Thumbnail
+from .models import Booking_details, Commission, Customer_payments, Guide_register_info, Profile_image, Category, Package, Package_image, Package_schedule, Package_service, Package_unavailable_date, Payment_method, Cart, Booking, Review, Seller_transactions, Thumbnail
 
 @admin.register(Guide_register_info)
 class GuideRegisterInfoAdmin(admin.ModelAdmin):
@@ -9,7 +9,7 @@ class GuideRegisterInfoAdmin(admin.ModelAdmin):
 
 @admin.register(Profile_image)
 class ProfileImageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'type', 'is_active', 'created_at')
+    list_display = ('id', 'user','image', 'type', 'is_active', 'created_at')
     list_filter = ('is_active', 'created_at' , 'type')
 
 @admin.register(Category)
@@ -42,8 +42,8 @@ class PackageUnavailableDateAdmin(admin.ModelAdmin):
 
 @admin.register(Payment_method)
 class PaymentMethodAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'type', 'number', 'holder_name', 'token')
-    search_fields = ( 'holder_name' , 'number')
+    list_display = ('id', 'user', 'type', 'holder_name', 'brand', 'last4', 'payment_method_id', 'exp_month', 'exp_year')
+    search_fields = ( 'holder_name' ,)
     list_filter=('type' ,)
 
 @admin.register(Cart)
@@ -52,7 +52,19 @@ class CartAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cart_id', 'is_accept', 'created_at')
+    list_display = ('id', 'customer', 'total_price', 'created_at')
+
+@admin.register(Booking_details)
+class Booking_detailsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'card', 'booking', 'unit_price', 'discount', 'is_accepted', 'created_at')
+
+@admin.register(Customer_payments)
+class Customer_paymentsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'customer', 'booking', 'amount', 'amount_received', 'currency', 'stripe_customer_id', 'stripe_payment_method_id', 'status', 'created')
+
+@admin.register(Seller_transactions)
+class Seller_transactionsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'seller', 'booking_details', 'commission', 'amount', 'amount_received', 'currency', 'stripe_admin_account_id', 'stripe_payment_method_id', 'status', 'created')
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
@@ -60,4 +72,8 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Thumbnail)
 class ThumbnailAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'image', 'order_number')
+    list_display = ('id', 'name', 'image')
+
+@admin.register(Commission)
+class CommissionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'type', 'percentage_of_sale_price')

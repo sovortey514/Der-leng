@@ -12,6 +12,9 @@ class User_role (models.Model):
     name = models.CharField(max_length=20, unique=True)
     description = models.CharField(max_length=50)
 
+    def __str__(self) -> str:
+        return f'{self.name}'
+
 class User(AbstractUser):
     id = models.UUIDField(
             primary_key = True,

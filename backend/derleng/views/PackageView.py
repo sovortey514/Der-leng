@@ -4,8 +4,8 @@ from rest_framework.response import Response
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from derleng.models import Package, Category, Package_image
-from authentication.permissions import Is_Admin_Or_Staff_Or_TourGuide_Or_ReadOnly
+from derleng.models import Commission, Package, Category, Package_image
+from authentication.permissions import IsAdminOrStaffOrTourGuideOrReadOnly
 from derleng.serializers import BasicPackageSerializer, Package_scheduleSerializer, Package_serviceSerializer, Package_unavailable_dateSerializer, PackageSerializer, Package_imageSerializer
 from derleng.mixins import PackageMixin
 
@@ -17,7 +17,7 @@ import json
 class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
-    permission_classes = [Is_Admin_Or_Staff_Or_TourGuide_Or_ReadOnly]
+    permission_classes = [IsAdminOrStaffOrTourGuideOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = '__all__'
     search_fields = ["name", "description", "package_service__detail", "package_schedule__destination", "address"]
@@ -27,6 +27,7 @@ class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
         try:
             request_data = request.data.copy()
             request_data['user'] = request.user.id
+            request_data['commission'] = Commission.objects.get(type='normal').id
 
             package_serializer = BasicPackageSerializer(data=request_data)
             package_serializer.is_valid(raise_exception=True)
