@@ -105,6 +105,11 @@ class Customer_paymentsSerializer(serializers.ModelSerializer):
         model = Customer_payments
         fields = '__all__'
 
+class Customer_refundsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer_refunds
+        fields = '__all__'
+
 class Seller_transactionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller_transactions

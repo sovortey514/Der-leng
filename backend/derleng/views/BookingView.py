@@ -4,12 +4,14 @@ from django.db import transaction
 #=========================================> Python
 import json
 from django.forms import ValidationError
+from django.utils import timezone
 
 #=========================================> DRF
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from derleng.tasks import cancel_payment_task
 
 #=========================================> Local
 from derleng.mixins import BookingMixin
@@ -39,21 +41,20 @@ class BookingPackageAPIView(APIView, BookingMixin.BookingMixin):
             booking_instance.total_price = total_price
             booking_instance.save()
 
+            #================================> Start Charge for customer
             payment_inst = Payment_method.objects.get(pk=payment_method_id)
             payment_intent = create_payment_intent(payment_inst.stripe_customer_id, payment_inst.stripe_payment_method_id, total_price, currency="usd")
 
             customer_payment_instance = self.store_customer_payment(user_instance.id, booking_instance.id, payment_inst.id, payment_intent)
 
+            #================================> Send Charge back to customer if seller not accept
+            # self.set_schedule_cancel_booking(customer_payment_id=customer_payment_instance.id)
+
             response = {
                 "status": "succeeded",
                 "message": "booking successfully.",
-                "data": {
-                    "booking": BookingSerializer(booking_instance).data,
-                    "customer_payment_record": Customer_paymentsSerializer(customer_payment_instance).data
-                }
             }
 
-            
             return Response(response, status=status.HTTP_200_OK)
         except Exception as errers:
             transaction.set_rollback(True)

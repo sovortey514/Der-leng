@@ -48,7 +48,7 @@ class UserLogin(APIView):
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
         access_token = refresh.access_token
-        user_data = UserSerializer(user).data
+        user_data = BasicUserSerializer(user).data
 
         return {
             'refresh_token': str(refresh),
@@ -119,14 +119,14 @@ class SocialLoginView(ConvertTokenView):
 
     def post(self, request, *args, **kwargs):
         response = super(SocialLoginView, self).post(request, *args, **kwargs)
-        jwt_token = get_jwt_by_token(response.data.get('access_token', ''))
-        new_data = response.data
-        if jwt_token.get('access', ''):
-            new_data['access_token_jwt'] = jwt_token.get('access', '')
-        if jwt_token.get('refresh', ''):
-            new_data['refresh_token_jwt'] = jwt_token.get('refresh', '')
+        new_response_data = get_jwt_by_token(response.data.get('access_token', ''))
+        # new_response = {}
+        # if jwt_token.get('access', ''):
+        #     new_response['access_token_jwt'] = jwt_token.get('access', '')
+        # if jwt_token.get('refresh', ''):
+        #     new_response['refresh_token_jwt'] = jwt_token.get('refresh', '')
 
-        return Response(new_data, status=response.status_code)
+        return Response(new_response_data, status=response.status_code)
 
 
 """

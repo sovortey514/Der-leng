@@ -73,3 +73,13 @@ def create_payment_intent(stripe_customer_id, stripe_payment_method_id, amount, 
     )
 
     return intent
+
+def create_transfer(destination, amount, currency="usd"):
+    transfer = stripe.Transfer.create(
+        amount=amount,
+        currency=currency,
+        destination=destination,
+    )
+
+    return transfer
+

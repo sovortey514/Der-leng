@@ -56,7 +56,7 @@ class BookingAdmin(admin.ModelAdmin):
 
 @admin.register(Booking_details)
 class Booking_detailsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'card', 'booking', 'unit_price', 'percentage_discount', 'is_accepted', 'created_at')
+    list_display = ('id', 'cart', 'booking', 'unit_price', 'percentage_discount', 'is_accepted', 'created_at')
 
 @admin.register(Customer_payments)
 class Customer_paymentsAdmin(admin.ModelAdmin):
@@ -64,7 +64,7 @@ class Customer_paymentsAdmin(admin.ModelAdmin):
 
 @admin.register(Seller_transactions)
 class Seller_transactionsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'seller', 'booking_details', 'commission', 'amount', 'amount_received', 'currency', 'stripe_admin_account_id', 'payment_method', 'status', 'created')
+    list_display = ('id', 'seller', 'booking_details', 'commission', 'amount', 'amount_received', 'currency', 'payment_method', 'status', 'created')
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):

@@ -30,6 +30,25 @@ class RegisterSerializer(serializers.ModelSerializer):
         user_obj.save()
         return user_obj
     
+class BasicUserSerializer(serializers.ModelSerializer):
+    role = BasicUser_roleSerializer()
+    class Meta:
+        model = User
+        fields = ['id', 'fullname', 'role']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        image = self.get_profile_images(instance)
+        data['profile_image'] = image
+        return data
+    
+    def get_profile_images(self, user):
+        profile_image_url = None    
+        profile_image = Profile_image.objects.filter(Q(user=user) & Q(is_active=True) & Q(type='profile')).first()
+        if profile_image:
+            profile_image_url = profile_image.image.url
+        return profile_image_url
+    
 class UserSerializer(serializers.ModelSerializer):
     role = BasicUser_roleSerializer()
     class Meta:

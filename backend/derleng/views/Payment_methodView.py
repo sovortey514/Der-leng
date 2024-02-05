@@ -71,3 +71,22 @@ def test_payment_intent(request):
     except Exception as error:
         return Response({"error": str(error)}, status=status.HTTP_400_BAD_REQUEST)
         
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(['POST'])
+def create_refund(request):
+    # refund = stripe.Refund.create(
+    # payment_intent="pi_3OejQHEhnoYmMdGF0HxjIYFe",
+    # amount=10000
+    # )
+
+    stripe.AccountLink.create(
+        account='{{CONNECTED_ACCOUNT_ID}}',
+        refresh_url="https://example.com/reauth",
+        return_url="https://example.com/return",
+        type="account_onboarding",
+    )
+
+
+    return Response(data=refund)

@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
     'authentication',
     'derleng',
-
+    
     'rest_framework',
     'rest_framework_simplejwt',
     'oauth2_provider',
@@ -255,8 +255,13 @@ SIMPLE_JWT = {
 #===========================> Media Dir and File <===========================
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-FILE_UPLOAD_MAX_MEMORY_SIZE = int(env('FILE_UPLOAD_MAX_MEMORY_SIZE')) * 1024 * 1024 # 10 Mb limit
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024 # 10 Mb limit
 
 #===========================> Stripe Key <===========================
 STRIPE_PUBLIC_KEY = env('STRIPE_PUBLISHABLE_KEY')
 STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
+
+#===========================> Celery Conf <===========================
+
+LIMIT_TIME_FOR_BOOKING_ACCEPT = 1
+

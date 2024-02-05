@@ -1,4 +1,8 @@
 from decimal import Decimal
+
+from django.utils import timezone
+from backend import settings
+from derleng.tasks import cancel_payment_task
 from derleng.models import Cart
 from derleng.serializers import Booking_detailsSerializer, Customer_paymentsSerializer
 
@@ -6,7 +10,6 @@ from derleng.serializers import Booking_detailsSerializer, Customer_paymentsSeri
 class BookingMixin:
     def store_booking_details(self, carts, booking_id):
         total_price = 0
-        print("Hello")
         for cart in carts:
             cart_id = cart["id"]
             cart_instance = Cart.objects.filter(pk=cart_id).first()
@@ -36,6 +39,7 @@ class BookingMixin:
         customer_payment_data["customer"] = user_id
         customer_payment_data["booking"] = booking_id
         customer_payment_data["payment_method"] = payment_method_id
+        customer_payment_data["id"] = payment_intent["id"]
         customer_payment_data["amount"] = payment_intent["amount"]
         customer_payment_data["amount_received"] = payment_intent["amount_received"]
         customer_payment_data["currency"] = payment_intent["currency"]
@@ -46,4 +50,9 @@ class BookingMixin:
         serializer.is_valid(raise_exception=True)
         customer_payment = serializer.save()
         return customer_payment
+    
+    def set_schedule_cancel_booking(self, customer_payment_id):
+        # Calculate the time when the task should be executed (e.g., LIMIT_TIME_FOR_BOOKING_ACCEPT from now)
+        execution_time = timezone.now() + timezone.timedelta(minutes=int(settings.LIMIT_TIME_FOR_BOOKING_ACCEPT))
+        cancel_payment_task.apply_async(args=[customer_payment_id], eta=execution_time)
 
