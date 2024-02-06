@@ -8,7 +8,7 @@ import UilSignout from '@iconscout/react-unicons/icons/uil-signout';
 import UilUser from '@iconscout/react-unicons/icons/uil-user';
 import UilUsersAlt from '@iconscout/react-unicons/icons/uil-users-alt';
 import { Avatar, Button } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -25,7 +25,15 @@ import PaymentBox from './Payment';
 import { changeLayoutMode } from '../../../redux/themeLayout/actionCreator';
 import { useSelector } from 'react-redux';
 
+const FILE_ENDPOINT = process.env.REACT_APP_FILE_ENDPOINT
+
 const AuthInfo = React.memo(() => {
+  const [user, setUser] = useState({
+    fullname: "",
+    profile_image: "",
+    role: {name: "customer", id: ""}
+  })
+
   const dispatch = useDispatch();
   const [state, setState] = useState({
     flag: 'en',
@@ -58,16 +66,33 @@ const AuthInfo = React.memo(() => {
     dispatch(changeLayoutMode(mode));
   };
 
+  useEffect(() => {
+    const user_info = localStorage.getItem("user")
+    if(user_info) {
+      setUser(JSON.parse(user_info))
+    }
+  }, [])
+
   const userContent = (
     <div>
       <div className="min-w-[280px] sm:min-w-full pt-4">
         <figure className="flex items-center text-sm rounded-[8px] bg-section dark:bg-white10 py-[20px] px-[25px] mb-[12px]">
-          <img className="ltr:mr-4 rtl:ml-4" src={require('../../../static/img/avatar/chat-auth.png')} alt="" />
+          <div className="ltr:mr-4 rtl:ml-4 h-[46px] w-[46px]">
+            <img
+              className='object-cover w-full h-full'
+              src={
+                user.profile_image ?
+                `${FILE_ENDPOINT}${user.profile_image}` : 
+                require('../../../static/img/avatar/chat-auth.png')
+              }
+              alt="" 
+            />
+          </div>
           <figcaption>
             <Heading className="text-dark dark:text-white87 mb-0.5 text-sm" as="h5">
-              Abdullah Bin Talha
+              {user.fullname}
             </Heading>
-            <p className="mb-0 text-xs text-body dark:text-white60">UI Expert</p>
+            <p className="mb-0 text-xs text-body dark:text-white60">{user.role.name}</p>
           </figcaption>
         </figure>
         <ul className="mb-0">
@@ -201,9 +226,14 @@ const AuthInfo = React.memo(() => {
       <div className="flex ltr:ml-3 rtl:mr-3 ltr:mr-4 rtl:ml-4 ssm:mr-0 ssm:rtl:ml-0">
         <Popover placement="bottomRight" content={userContent} action="click">
           <Link to="#" className="flex items-center text-light whitespace-nowrap">
-            <Avatar src="https://cdn0.iconfinder.com/data/icons/user-pictures/100/matureman1-512.png" />
+            <Avatar 
+            src={
+                user.profile_image ?
+                `${FILE_ENDPOINT}${user.profile_image}` : 
+                require('../../../static/img/avatar/chat-auth.png')
+              } />
             <span className="ltr:mr-1.5 rtl:ml-1.5 ltr:ml-2.5 rtl:mr-2.5 text-body dark:text-white60 text-sm font-medium md:hidden">
-              Md. Rafiq
+              {user.fullname}
             </span>
             <UilAngleDown className="w-4 h-4 ltr:md:ml-[5px] rtl:md:mr-[5px]" />
           </Link>

@@ -27,8 +27,8 @@ const User = React.memo(() => {
     >
       <Routes>
         <Route index path="/" element={<Home />} />
+        <Route exact path="tour-service/new" element={<AddProduct />} />
         <Route index path="tour-service/:id" element={<ProductDetails />} />
-        <Route exact path="add-tour-service" element={<AddProduct />} />
         <Route exact path="edit-tour-service/*" element={<EditProduct />} />
         <Route path="profile/myProfile/*" element={<Myprofile />} />
         <Route path='cart/*' element={<Cart/>}/>

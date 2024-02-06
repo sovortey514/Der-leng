@@ -1,32 +1,34 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import {
-  UilEnvelope,
-  UilChat,
-  UilShoppingCart,
-  Uil500px,
-  UilBagAlt,
-  UilCalendarAlt,
-  UilUsersAlt,
-  UilAt,
-  UilClipboardAlt,
-  // UilExpandArrowsAlt,
-  UilCheckSquare,
-  UilExchange,
-  UilFile,
-  UilHeadphones,
-  UilChartBar,
-  UilCompactDisc,
-  UilTable,
-  UilSquareFull,
-  UilApps,
-  UilEdit,
-  UilMap,
-} from '@iconscout/react-unicons';
+// import {
+//   UilEnvelope,
+//   UilChat,
+//   UilShoppingCart,
+//   Uil500px,
+//   UilBagAlt,
+//   UilCalendarAlt,
+//   UilUsersAlt,
+//   UilAt,
+//   UilClipboardAlt,
+//   // UilExpandArrowsAlt,
+//   UilCheckSquare,
+//   UilExchange,
+//   UilFile,
+//   UilHeadphones,
+//   UilChartBar,
+//   UilCompactDisc,
+//   UilTable,
+//   UilSquareFull,
+//   UilApps,
+//   UilEdit,
+//   UilMap,
+// } from '@iconscout/react-unicons';
 import { TopMenuStyle } from './Style';
+import { DataService } from '../config/dataService/dataService';
 
 function TopMenu() {
-  const path = '/admin';
+  const [categories, setCategories] = useState(null)
+  const path = '/';
 
   useLayoutEffect(() => {
     const active = document.querySelector('.hexadash-top-menu a.active');
@@ -58,6 +60,24 @@ function TopMenu() {
       event.currentTarget.closest('.megaMenu-wrapper').previousSibling.classList.add('active');
     }
   };
+
+  console.log(categories)
+
+  useEffect(() => {
+    const listCetegory = async () => {
+      try {
+        const response = await DataService.get("/categories")
+        console.log(response.data)
+        setCategories(response.data)
+      } catch (error) {
+        console.log("Error category..")
+      }
+    } 
+
+    listCetegory();
+
+
+  }, [])
   return (
     <TopMenuStyle>
       <div className="hexadash-top-menu ltr:pl-[20px] rtl:pr-[20px] xl:ltr:pl-[10px] xl:rtl:pr-[10px]">
@@ -66,58 +86,25 @@ function TopMenu() {
             <Link to="#" className="parent">
               Categories
             </Link>
-            <ul className="subMenu w-[600px] md:w-[200px] grid grid-cols-3 md:grid-cols-1">
-              <li>
-                <NavLink to={`${path}/admin`} onClick={addParentActive}>
-                  Demo 1
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`${path}/demo-2`} onClick={addParentActive}>
-                  Demo 2
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`${path}/demo-3`} onClick={addParentActive}>
-                  Demo 3
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`${path}/demo-4`} onClick={addParentActive}>
-                  Demo 4
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`${path}/demo-5`} onClick={addParentActive}>
-                  Demo 5
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`${path}/demo-6`} onClick={addParentActive}>
-                  Demo 6
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`${path}/demo-7`} onClick={addParentActive}>
-                  Demo 7
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`${path}/demo-8`} onClick={addParentActive}>
-                  Demo 8
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`${path}/demo-9`} onClick={addParentActive}>
-                  Demo 9
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`${path}/demo-10`} onClick={addParentActive}>
-                  Demo 10
-                </NavLink>
-              </li>
-            </ul>
+            {
+              !categories ? (
+                <ul className='subMenu w-[600px] md:w-[200px] h-[200px] flex items-center justify-center'>
+                  No categories☹️
+                </ul>
+              ) : (
+                <ul className="subMenu w-[600px] md:w-[200px] grid grid-cols-3 md:grid-cols-1">
+                  {
+                    categories.map((category) => (
+                      <li key={category.id}>
+                        <NavLink to={`${path}${category.name}`} onClick={addParentActive}>
+                          {category.name}
+                        </NavLink>
+                      </li>
+                    ))
+                  }
+                </ul>
+              )
+            }
           </li>
 
           {/* <li className="mega-item has-subMenu">

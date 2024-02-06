@@ -14,7 +14,6 @@ const login = (values, callback) => {
     try {
       // const response = await DataService.post('auth/users/login', values);
       const response = await axios.post(`${API_ENDPOINT}/auth/users/login` , values ,{headers: {'Content-Type': 'application/json'}});
-      console.log(response)
       if (response.status === 200) {
         Cookies.set('access_token', response.data.access_token);
         Cookies.set('logedIn', true);
@@ -36,14 +35,14 @@ const register = (values) => {
   return async (dispatch) => {
     dispatch(loginBegin());
     try {
-      const response = await DataService.post('/register', values);
-      if (response.data.errors) {
-        dispatch(loginErr('Registration failed!'));
-      } else {
-        dispatch(loginSuccess(false));
-      }
+      console.log(values)
+      const response = await axios.post(`${API_ENDPOINT}/auth/users/register`, values, {headers: {'Content-Type': 'application/json'}});
+      console.log(response)
+      dispatch(loginSuccess(false));
+      return response
     } catch (err) {
       dispatch(loginErr(err));
+      throw err
     }
   };
 };
@@ -54,6 +53,7 @@ const logOut = (callback) => {
     try {
       Cookies.remove('logedIn');
       Cookies.remove('access_token');
+      localStorage.removeItem('user')
       dispatch(logoutSuccess(false));
       callback();
     } catch (err) {
@@ -62,4 +62,13 @@ const logOut = (callback) => {
   };
 };
 
-export { login, logOut, register };
+const isUsernameExist = async (values) => {
+    try {
+      const response = await axios.get(`${API_ENDPOINT}/auth/users/?username=${values}`); 
+      return response.data.count > 0
+    } catch (err) {
+      throw err
+    }
+  };
+
+export { login, logOut, register, isUsernameExist };
