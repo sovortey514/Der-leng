@@ -30,6 +30,8 @@ def is_valid_username(username):
     return False
 
 def user_validation(data):
+    print(data.get('username', ""))
+    print(data['username'].strip())
     username = data['username'].strip()
     email = data['email'].strip()
     password = data['password'].strip()
@@ -44,6 +46,8 @@ def user_validation(data):
     
     if not is_valid_email(email):
         errors['email'] = ['Please provide a valid email address']
+
+    print(errors)
 
     if errors:
         raise ValidationError(errors)

@@ -2,6 +2,7 @@ import { Spin } from 'antd';
 import React, { lazy, Suspense, useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import withUserLayout from '../../layout/withUserLayout';
+import Category from './category.js';
 const Myprofile = lazy(() => import('../../container/profile/myProfile/Index'));
 const Chat = lazy(() => import('../../container/chat/ChatApp'));
 const NotFound = lazy(() => import('../../container/pages/404'));
@@ -24,9 +25,11 @@ const User = React.memo(() => {
           <Spin />
         </div>
       }
+      className="bg-green-500"
     >
       <Routes>
         <Route index path="/" element={<Home />} />
+        <Route index path="/category/:category" element={<Category/>} />
         <Route exact path="tour-service/new" element={<AddProduct />} />
         <Route index path="tour-service/:id" element={<ProductDetails />} />
         <Route exact path="edit-tour-service/*" element={<EditProduct />} />
@@ -35,6 +38,7 @@ const User = React.memo(() => {
         <Route path='payment/*' element={<Payment/>}/>
         <Route path="chat/*" element={<Chat />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/404" element={<NotFound />} />
       </Routes>
     </Suspense>
   );

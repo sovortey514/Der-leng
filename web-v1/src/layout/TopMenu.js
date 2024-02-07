@@ -28,7 +28,7 @@ import { DataService } from '../config/dataService/dataService';
 
 function TopMenu() {
   const [categories, setCategories] = useState(null)
-  const path = '/';
+  const path = '/category';
 
   useLayoutEffect(() => {
     const active = document.querySelector('.hexadash-top-menu a.active');
@@ -61,21 +61,17 @@ function TopMenu() {
     }
   };
 
-  console.log(categories)
-
   useEffect(() => {
     const listCetegory = async () => {
       try {
         const response = await DataService.get("/categories")
-        console.log(response.data)
-        setCategories(response.data)
+        setCategories(response.data.results)
       } catch (error) {
         console.log("Error category..")
       }
     } 
 
     listCetegory();
-
 
   }, [])
   return (
@@ -96,7 +92,7 @@ function TopMenu() {
                   {
                     categories.map((category) => (
                       <li key={category.id}>
-                        <NavLink to={`${path}${category.name}`} onClick={addParentActive}>
+                        <NavLink to={`${path}/${category.name}`} onClick={addParentActive}>
                           {category.name}
                         </NavLink>
                       </li>

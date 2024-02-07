@@ -22,6 +22,13 @@ class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
     filterset_fields = '__all__'
     search_fields = ["name", "description", "package_service__detail", "package_schedule__destination", "address"]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category_name = self.request.query_params.get('category_name')
+        if category_name:
+            queryset = queryset.filter(category__name=category_name)
+        return queryset
+
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         try:

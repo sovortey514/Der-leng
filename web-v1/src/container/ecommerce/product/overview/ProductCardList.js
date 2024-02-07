@@ -12,8 +12,9 @@ import { Button } from '../../../../components/buttons/buttons';
 import { updateWishList } from '../../../../redux/product/actionCreator';
 
 const ProductCardsList = React.memo(({ product }) => {
-  const { id, name, rate, price, oldPrice, popular, img, description } = product;
+  const { id, name, amount_rating, avg_rating, default_price, percentage_discount, address, thumbnail, description, popular } = product;
   const dispatch = useDispatch();
+  const FILE_ENDPOINT = process.env.REACT_APP_FILE_ENDPOINT
 
   return (
     <div className="list-view" style={{ marginBottom: 20 }}>
@@ -21,7 +22,8 @@ const ProductCardsList = React.memo(({ product }) => {
         <Row gutter={15}>
           <Col md={6} xs={24}>
             <figure className="ltr:mr-[15px] rtl:ml-[15px] mb-0">
-              <img className="w-full rounded-10" src={require(`../../../../${img}`)} alt="" />
+              {/* <img className="w-full rounded-10" src={require(`../../../../${img}`)} alt="" /> */}
+              <img className="w-full rounded-10" src={ thumbnail ? `${FILE_ENDPOINT}${thumbnail}` : require(`../../../../../src/static/img/default_img/travel-cambodia.png`)} alt={`img${id}`} />
             </figure>
           </Col>
           <Col md={12} xs={24}>
@@ -34,13 +36,13 @@ const ProductCardsList = React.memo(({ product }) => {
                   {name}
                 </NavLink>
               </Heading>
-              <p className="text-body dark:text-white60 text-[15px]">{description}</p>
+              <p className="text-body dark:text-white60 text-[15px]">{description || 'Angkor Wat is a Hindu-Buddhist temple complex in Cambodia, located on a site measuring 162.6 hectares.'}</p>
               <div className='flex'>
                 <p
                   className="font-kantumruy-pro flex items-center h-[28px] px-2 bg-success text-white dark:text-white87 text-xs font-semibold border-primary"
                 > 
                   <FontAwesome name="map" className="w-[14px] h-[14px] ltr:mr-1.5 rtl:ml-1.5" />
-                  AnkorWat, Seamreab
+                  {address}
                 </p>
             </div>
             </div>
@@ -61,11 +63,11 @@ const ProductCardsList = React.memo(({ product }) => {
                 )}
               </Link>
               <p className="flex items-center mb-[5px] flex-wrap gap-y-[5px]">
-                <span className="font-semibold text-primary">${price} </span>
-                {oldPrice && (
+                <span className="font-semibold text-primary">${(100-percentage_discount) * default_price / 100}</span>
+                {parseFloat(percentage_discount) !== 0 && (
                   <>
-                    <del className="mx-[5px] text-light dark:text-white60 text-sm"> ${oldPrice} </del>
-                    <span className="text-xs font-medium text-link"> 60% Off</span>
+                    <del className="mx-[5px] text-light dark:text-white60 text-sm"> ${default_price} </del>
+                    <span className="text-xs font-medium text-link"> {percentage_discount}% Off</span>
                   </>
                 )}
               </p>
@@ -73,11 +75,11 @@ const ProductCardsList = React.memo(({ product }) => {
                 <Rate
                   className="relative -top-[2px] ltr:mr-[5px] rtl:ml-[5px] ltr:[&>li]:mr-0.5 rtl:[&>li]:ml-0.5"
                   allowHalf
-                  defaultValue={rate}
+                  defaultValue={avg_rating}
                   disabled
                 />{' '}
-                4.9
-                <span className="ltr:ml-1.5 rtl:mr-1.5 text-light dark:text-white60 font-normal"> 778 Reviews</span>
+                {avg_rating}
+                <span className="ltr:ml-1.5 rtl:mr-1.5 text-light dark:text-white60 font-normal"> {amount_rating} Reviews</span>
               </div>
               <div className="flex items-start flex-col mt-5 -mx-[5px] -mb-[5px]">
                 <Button

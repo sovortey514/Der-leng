@@ -179,6 +179,8 @@ const ThemeLayout = (WrappedComponent) => {
                 </div>
               </div>
             </Header>
+
+            {/* ==============================> Profile When width < 991 <============================ */}
             <Row>
               <Col md={0} sm={24} xs={24}>
                 <SmallScreenAuthInfo hide={hide}>
@@ -187,7 +189,7 @@ const ThemeLayout = (WrappedComponent) => {
               </Col>
             </Row>
             <Layout>
-              {!topMenu || window.innerWidth <= 991 ? (
+              {/* {!topMenu || window.innerWidth <= 991 ? (
                 <ThemeProvider theme={theme}>
                   <Sider
                     width={280}
@@ -209,37 +211,39 @@ const ThemeLayout = (WrappedComponent) => {
                     </Scrollbars>
                   </Sider>
                 </ThemeProvider>
-              ) : null}
-              <Layout className="atbd-main-layout">
-                <Content>
-                  <WrappedComponent {...this.props} />
-                  <FooterStyle className="bg-white dark:bg-[#1B1E2B]">
-                    <Row>
-                      <Col md={12} xs={24}>
-                        <span className="inline-block w-full font-medium admin-footer__copyright md:text-center text-theme-gray dark:text-white60 md:mb-[10px]">
-                          © 2023
-                          <Link className="mx-[4px] text-primary" to="#">
-                            SovWare
-                          </Link>
-                        </span>
-                      </Col>
-                      <Col md={12} xs={24}>
-                        <div className="justify-end md:justify-center items-center flex gap-[15px]">
-                          <NavLink className="text-theme-gray dark:text-white60 text-[14px] hover:text-primary" to="#">
-                            About
-                          </NavLink>
-                          <NavLink className="text-theme-gray dark:text-white60 text-[14px] hover:text-primary" to="#">
-                            Team
-                          </NavLink>
-                          <NavLink className="text-theme-gray dark:text-white60 text-[14px] hover:text-primary" to="#">
-                            Contact
-                          </NavLink>
-                        </div>
-                      </Col>
-                    </Row>
-                  </FooterStyle>
-                </Content>
-              </Layout>
+              ) : null} */}
+              <div className='w-full'>
+                <Layout className="atbd-main-layout ">
+                  <Content>
+                    <WrappedComponent {...this.props} />
+                    <FooterStyle className="bg-white dark:bg-[#1B1E2B]">
+                      <Row>
+                        <Col md={12} xs={24}>
+                          <span className="inline-block w-full font-medium admin-footer__copyright md:text-center text-theme-gray dark:text-white60 md:mb-[10px]">
+                            © 2023
+                            <Link className="mx-[4px] text-primary" to="#">
+                              SovWare
+                            </Link>
+                          </span>
+                        </Col>
+                        <Col md={12} xs={24}>
+                          <div className="justify-end md:justify-center items-center flex gap-[15px]">
+                            <NavLink className="text-theme-gray dark:text-white60 text-[14px] hover:text-primary" to="#">
+                              About
+                            </NavLink>
+                            <NavLink className="text-theme-gray dark:text-white60 text-[14px] hover:text-primary" to="#">
+                              Team
+                            </NavLink>
+                            <NavLink className="text-theme-gray dark:text-white60 text-[14px] hover:text-primary" to="#">
+                              Contact
+                            </NavLink>
+                          </div>
+                        </Col>
+                      </Row>
+                    </FooterStyle>
+                  </Content>
+                </Layout>
+              </div>
             </Layout>
           </Layout>
           {window.innerWidth <= 991 ? (

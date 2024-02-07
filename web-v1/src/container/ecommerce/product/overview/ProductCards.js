@@ -12,13 +12,14 @@ import { Button } from '../../../../components/buttons/buttons';
 import { updateWishList } from '../../../../redux/product/actionCreator';
 
 function ProductCards({ product }) {
-  const { id, name, rate, price, oldPrice, popular, img } = product;
+  const { id, name, amount_rating, avg_rating, default_price, percentage_discount, popular, address, thumbnail } = product;
   const dispatch = useDispatch();
+  const FILE_ENDPOINT = process.env.REACT_APP_FILE_ENDPOINT
 
   return (
     <div className="relative bg-white dark:bg-white10 mb-[30px] rounded-[10px] shadow-[0_5px_20px_rgba(173,181,217,0,1)]">
       <figure className="mb-0 ">
-        <img className="w-full rounded-t-[10px]" src={require(`../../../../${img}`)} alt={`img${id}`} />
+        <img className="w-full rounded-t-[10px]" src={ thumbnail ? `${FILE_ENDPOINT}${thumbnail}` : require(`../../../../../src/static/img/default_img/travel-cambodia.png`)} alt={`img${id}`} />
       </figure>
       <figcaption className="pt-5 px-5 pb-[26px]">
         <Link
@@ -46,18 +47,18 @@ function ProductCards({ product }) {
           <Rate
             className="relative -top-[2px] flex items-center ltr:[&>li]:mr-0.5 rtl:[&>li]:ml-0.5 [&>li.ant-rate-star-zero>div>div>span>svg]:text-[#c6d0dc]"
             allowHalf
-            defaultValue={rate}
+            defaultValue={avg_rating}
             disabled
           />{' '}
-          4.9
-          <span className="ltr:ml-1.5 rtl:mr-1.5 text-light dark:text-white60 font-normal"> 778 Reviews</span>
+          {avg_rating}
+          <span className="ltr:ml-1.5 rtl:mr-1.5 text-light dark:text-white60 font-normal"> {amount_rating} Reviews</span>
         </div>
         <p className="flex items-center mb-[5px]">
-          <span className="font-semibold text-primary">${price} </span>
-          {oldPrice && (
+          <span className="font-semibold text-primary">${(100-percentage_discount) * default_price / 100} </span>
+          {parseFloat(percentage_discount) !== 0 && (
             <>
-              <del className="mx-[5px] text-light dark:text-white60 text-sm"> ${oldPrice} </del>
-              <span className="text-xs font-medium text-link"> 60% Off</span>
+              <del className="mx-[5px] text-light dark:text-white60 text-sm"> ${default_price} </del>
+              <span className="text-xs font-medium text-link"> {percentage_discount}% Off</span>
             </>
           )}
         </p>
@@ -66,7 +67,7 @@ function ProductCards({ product }) {
             className="font-kantumruy-pro flex items-center h-[28px] px-2 bg-success text-white dark:text-white87 text-xs font-semibold border-primary"
           > 
             <FontAwesome name="map" className="w-[14px] h-[14px] ltr:mr-1.5 rtl:ml-1.5" />
-            AnkorWat, Seamreab
+            {address}
           </p>
         </div>
         <div className="flex items-center flex-wrap mt-5 -mx-[5px] -mb-[5px]">

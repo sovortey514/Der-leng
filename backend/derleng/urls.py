@@ -1,7 +1,7 @@
 from django.urls import include, path
 
 from derleng.views import BookingView, Payment_methodView
-from derleng.views.BookingDetailView import BookingDetailsViewset, accept_booking, BookingDetailsAPIView
+from derleng.views.BookingDetailView import accept_booking, BookingDetailsAPIView
 
 from .views import ThumbnailView, PackageView, ReviewView, CategoryView , CartView
 
@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 viewsetRouter = DefaultRouter()
 viewsetRouter.register(r'packages', PackageView.PackageViewSet, basename='package')
-# viewsetRouter.register(r'booking_details', BookingDetailsViewset, basename='booking_detail')
+viewsetRouter.register(r'categories', CategoryView.CategoryViewSet, basename='category')
 
 urlpatterns = [
     path('', include(viewsetRouter.urls), name='viewset'),
@@ -20,8 +20,8 @@ urlpatterns = [
     path('carts/<uuid:pk>', CartView.CartAPIView.as_view(), name='cart'),
     path('thumbnails' , ThumbnailView.ThumbnailAPIView.as_view() , name=''),
     path('thumbnails/<uuid:pk>' , ThumbnailView.ThumbnailAPIView.as_view() , name=''),
-    path('categorys' , CategoryView.CategoryAPIView.as_view(), name=''),
-    path('categorys/<uuid:pk>' , CategoryView.CategoryAPIView.as_view(), name=''),
+    # path('categories' , CategoryView.CategoryAPIView.as_view(), name=''),
+    # path('categories/<uuid:pk>' , CategoryView.CategoryAPIView.as_view(), name=''),
     path('reviews' , ReviewView.ReviewAPIView.as_view(), name=''),
     path('reviews/<uuid:pk>' , ReviewView.ReviewAPIView.as_view(), name=''),
     path('test-payment/', Payment_methodView.test_payment, name="test_payment"),

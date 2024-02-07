@@ -1,18 +1,16 @@
-import React, { lazy, useState, useEffect, Suspense } from 'react';
+import React, { lazy, useState, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Radio, Spin, Skeleton } from 'antd';
-import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { Radio, Spin } from 'antd';
+import { NavLink, useLocation } from 'react-router-dom';
 import UilApps from '@iconscout/react-unicons/icons/uil-apps';
-import UilTimes from '@iconscout/react-unicons/icons/uil-times';
 import UilListUl from '@iconscout/react-unicons/icons/uil-list-ul';
-import UilAlignLeft from '@iconscout/react-unicons/icons/uil-align-left';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 
+// ==============================> Local <==============================
 import { AutoComplete } from '../../../components/autoComplete/autoComplete';
 import { sorting } from '../../../redux/product/actionCreator';
-import { Button } from '../../../components/buttons/buttons';
+import usePackageFetcher from '../../../hooks/Product/usePackageFetcher';
 
-const Filters = lazy(() => import('./overview/Filters'));
 const Grid = lazy(() => import('./overview/Grid'));
 const List = lazy(() => import('./overview/List'));
 const NotFound = lazy(() => import('../../pages/404'));
@@ -31,6 +29,7 @@ function Product() {
   const path = '.';
   const dispatch = useDispatch();
   const searchData = useSelector((state) => state.headerSearchData);
+  const packageFetcher = usePackageFetcher()
 
   const [state, setState] = useState({
     notData: searchData,
@@ -59,34 +58,6 @@ function Product() {
   const [activeSort, setActiveSort] = useState('top-rated');
   const [activeView, setActiveView] = useState('grid');
 
-  // const [isDivVisible, setIsDivVisible] = useState(false);
-
-  // useEffect(() => {
-  //   const mq = window.matchMedia('(min-width: 1200px)');
-
-  //   function handleMqChange(event) {
-  //     setIsDivVisible(event.matches);
-  //   }
-
-  //   mq.addEventListener('change', handleMqChange);
-  //   setIsDivVisible(mq.matches);
-
-  //   return () => {
-  //     mq.removeEventListener('change', handleMqChange);
-  //   };
-  // }, []);
-
-  // function handleButtonClick() {
-  //   setIsDivVisible(!isDivVisible);
-  //   const div = document.querySelector('.ant-layout-content');
-  //   div.classList.toggle('overlay');
-  // }
-  // function handleClose() {
-  //   setIsDivVisible(false);
-  //   const div = document.querySelector('.ant-layout-content');
-  //   div.classList.remove('overlay');
-  // }
-
   return (
     <>
       <PageHeader
@@ -95,40 +66,6 @@ function Product() {
         className="flex  justify-between items-center px-8 xl:px-[15px] pt-2 pb-6 sm:pb-[30px] bg-transparent sm:flex-col"
       />
       <main className="min-h-[715px] lg:min-h-[580px] bg-transparent px-8 xl:px-[15px] pb-[50px] ssm:pb-[30px]">
-
-        {/* ===========================> Filter Btn <=============================== */}
-        {/* <button
-          className="mb-[15px] w-[45px] h-[45px] inline-flex xl:inline-flex items-center justify-center p-0 text-primary bg-white dark:bg-white10 dark:text-white87 border-1 border-white dark:border-white10 rounded-6"
-          type="button"
-          onClick={handleButtonClick}
-        >
-          <UilAlignLeft />
-        </button> */}
-
-        {/* ===========================> Left Filter Product <=============================== */}
-        {/* {isDivVisible ? (
-          <div className="xl:absolute xl:top-[30px] ltr:xl:left-[15px] rtl:xl:right-[15px] xl:w-full xl:h-full content-[''] xl:z-[2]">
-            <Button
-              type="link"
-              className="hidden bg-transparent border-none text-danger sm:px-0 xl:inline-flex ltr:float-right rtl:float-left z-[1] mt-[14px] ltr:sm:mr-[15px] rtl:sm:ml-[15px]"
-              style={{ marginTop: 0 }}
-              onClick={handleClose}
-            >
-              <UilTimes />
-            </Button>
-            <Suspense
-              fallback={
-                <div className="bg-white dark:bg-white10 p-[25px] rounded-[10px]">
-                  <Skeleton paragraph={{ rows: 22 }} active />
-                </div>
-              }
-            >
-              <Filters />
-            </Suspense>
-          </div>
-        ) : null} */}
-
-        
         <div className="items-center flex flex-wrap justify-between 3xl:justify-center mb-[30px] gap-y-[15px]">
           <div className="flex items-center flex-wrap gap-[25px] min-3xl:[&>div>div>span>span]:w-[360px] [&>div>div>span>.ant-input-affix-wrapper]:!border-none [&>div>div>span>.ant-input-affix-wrapper>input]:focus:!border-none [&>div>div]:!h-[48px] [&>div]:!w-auto [&>div]:!border-none 3xl:justify-center">
             <AutoComplete onSearch={handleSearch} dataSource={notData} placeholder="Search" patterns />
@@ -226,7 +163,7 @@ function Product() {
             </div>
           }
         >
-          {view === 'grid' ? <Grid /> : <List />}
+          {view === 'grid' ? <Grid state={packageFetcher} /> : <List state={packageFetcher} />}
         </Suspense>
       </main>
     </>

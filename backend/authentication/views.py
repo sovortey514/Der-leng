@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
 from django.utils import timezone
 
 from rest_framework.views import APIView
@@ -30,9 +30,11 @@ class UserRegister(APIView):
 
     def post(self, request):
         try:
+            print(request.data)
             validate_data = user_validation(request.data)
+            print(validate_data)
         except ValidationError as e:
-            return Response({'errrors': e}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'errors': e}, status=status.HTTP_400_BAD_REQUEST)
         
         serializer = RegisterSerializer(data=validate_data)
         if serializer.is_valid(raise_exception=True):
@@ -96,6 +98,10 @@ class UserLogin(APIView):
 
                 if not auth_users:
                     return Response({'errors': 'Invalid password. Please double-check your password and try again.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+                if len(auth_users) == 1:
+                    username = auth_users[0].username
+                    return self.login_user(request, username, password)
 
                 responses = [self.get_tokens_for_user(user) for user in auth_users]
                 return Response(responses, status=status.HTTP_202_ACCEPTED)
@@ -172,3 +178,4 @@ class UserViewSet(viewsets.ModelViewSet):
 
         except ObjectDoesNotExist as error:
             return Response({"error": str(error)}, status=status.HTTP_404_NOT_FOUND)
+

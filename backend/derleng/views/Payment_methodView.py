@@ -81,7 +81,7 @@ def create_refund(request):
     # amount=10000
     # )
 
-    stripe.AccountLink.create(
+    refund = stripe.AccountLink.create(
         account='{{CONNECTED_ACCOUNT_ID}}',
         refresh_url="https://example.com/reauth",
         return_url="https://example.com/return",

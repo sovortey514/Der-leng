@@ -1,42 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Pagination, Spin } from 'antd';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { Row, Col, Spin } from 'antd';
 import ProductCards from './ProductCards';
 import Heading from '../../../../components/heading/heading';
-import { PaginationStyle } from '../../../styled';
 
-function Grid() {
-  const { productsAll, isLoader } = useSelector((state) => {
-    return {
-      productsAll: state.products.data,
-      isLoader: state.products.loading,
-    };
-  });
-
-  const [state, setState] = useState({
-    products: productsAll,
-    current: 0,
-    pageSize: 0,
-  });
-
-  const { products } = state;
-
-  useEffect(() => {
-    if (productsAll) {
-      setState({
-        products: productsAll,
-      });
-    }
-  }, [productsAll]);
-
-  const onShowSizeChange = (current, pageSize) => {
-    setState({ ...state, current, pageSize });
-  };
-
-  const onHandleChange = (current, pageSize) => {
-    // You can create pagination in here
-    setState({ ...state, current, pageSize });
-  };
+function Grid({state}) {
+  const {packages, isLoader, isLoadMore} = state;
 
   return (
     <Row gutter={30}>
@@ -46,11 +14,11 @@ function Grid() {
             <Spin />
           </div>
         </Col>
-      ) : products.length ? (
-        products.map(({ id, name, rate, price, oldPrice, popular, img }) => {
+      ) : packages.length ? (
+        packages.map(({ id, name, amount_rating, avg_rating, default_price, percentage_discount, address, thumbnail }) => {
           return (
-            <Col xxl={6} lg={12} xs={24} key={id}>
-              <ProductCards product={{ id, name, rate, price, oldPrice, popular, img }} />
+            <Col xxl={6} lg={8} md={12} xs={24} key={id}>
+              <ProductCards product={{ id, name, amount_rating, avg_rating, default_price, percentage_discount, popular: false, address, thumbnail }} />
             </Col>
           );
         })
@@ -61,22 +29,11 @@ function Grid() {
           </>
         </Col>
       )}
-      <Col xs={24} className="pb-30">
-        <PaginationStyle style={{ marginTop: 10 }}>
-          {products.length ? (
-            <div className="ant-pagination-custom-style text-end">
-              <Pagination
-                onChange={onHandleChange}
-                showSizeChanger
-                onShowSizeChange={onShowSizeChange}
-                pageSize={10}
-                defaultCurrent={1}
-                total={40}
-              />
-            </div>
-          ) : null}
-        </PaginationStyle>
-      </Col>
+      {isLoadMore && 
+      <div className= " w-full spin flex items-center justify-center">
+        <Spin />
+      </div>
+      }
     </Row>
   );
 }
