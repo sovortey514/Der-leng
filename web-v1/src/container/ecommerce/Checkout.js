@@ -1,50 +1,55 @@
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Row, Col, Skeleton } from 'antd';
 import { Route, Routes } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { WizardWrapper } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
+import { getCart } from '../../hooks/Product/useCartFetcher';
 
 import { Cards } from '../../components/cards/frame/cards-frame';
-import { cartGetData } from '../../redux/cart/actionCreator';
 
 const Checkout = lazy(() => import('./overview/CheckoutWizard'));
 const Ordersummary = lazy(() => import('./overview/Ordersummary'));
 
-function ShoppingCart() {
+function CheckoutPage() {
   const PageRoutes = [
     {
-      path: '/admin',
-      breadcrumbName: 'Dashboard',
+      path: '/',
+      breadcrumbName: 'Home',
     },
     {
       path: '',
-      breadcrumbName: 'Shopping Cart',
+      breadcrumbName: 'Checkout',
     },
   ];
-  const dispatch = useDispatch();
-  const { cartData } = useSelector((state) => {
-    return {
-      cartData: state.cart.data,
-      rtl: state.ChangeLayoutMode.rtlData,
-    };
-  });
 
-  useEffect(() => {
-    if (cartGetData) {
-      dispatch(cartGetData());
-    }
-  }, [dispatch]);
+  const [state, setState] = useState({
+    carts: [],
+    isLoader: true,
+  })
+  
+  const [refreshData, setRefreshData] = useState(true)
 
+  const {isLoader, carts} = state;
+  
   let subtotal = 0;
+  let subDiscountPrice = 0;
 
-  if (cartData !== null) {
-    cartData.map((data) => {
-      const { quantity, price } = data;
+  if (!isLoader && carts !== null) {
+    carts.map((cart) => {
+      const percentage_discount = cart["package"].percentage_discount;
+      const quantity = cart.customer_amount;
+      const price = cart.service.price;
+      const discountPrice = percentage_discount*cart.service.price/100;
       subtotal += parseInt(quantity, 10) * parseInt(price, 10);
+      subDiscountPrice += parseInt(quantity, 10) * parseInt(discountPrice, 10)
       return subtotal;
     });
   }
+
+  useEffect(() => {
+    getCart(setState)
+    setRefreshData(false)
+  }, [refreshData])
 
   return (
     <>
@@ -58,7 +63,7 @@ function ShoppingCart() {
           <Col md={24}>
             <Cards className="[&>.ant-card-body]:p-[40px] xl:[&>.ant-card-body]:px-[15px]" headless>
               <Row gutter={30}>
-                <Col xxl={17} xs={24} className="3xl:mb-[50px]">
+                <Col xxl={17} xs={24} className="3xl:mb-[50px] xs:px-0">
                   <WizardWrapper>
                     <Suspense
                       fallback={
@@ -68,7 +73,7 @@ function ShoppingCart() {
                       }
                     >
                       <Routes>
-                        <Route index element={<Checkout />} />
+                        <Route index element={<Checkout dataProp={state} setRefreshCartData={setRefreshData} />} />
                       </Routes>
                     </Suspense>
                   </WizardWrapper>
@@ -81,7 +86,7 @@ function ShoppingCart() {
                       </Cards>
                     }
                   >
-                    <Ordersummary subtotal={subtotal} checkout />
+                    <Ordersummary subtotal={subtotal} discount={subDiscountPrice} checkout={true} />
                   </Suspense>
                 </Col>
               </Row>
@@ -93,4 +98,4 @@ function ShoppingCart() {
   );
 }
 
-export default ShoppingCart;
+export default CheckoutPage;

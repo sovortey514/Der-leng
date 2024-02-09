@@ -43,7 +43,7 @@ const ActionWrapper = Styled.div`
         width: 100%;
         float: right;
         display: flex;
-        justify-content: space-between;
+        justify-content: space-evenly;
         @media only screen and (max-width: 991px){
             margin-top: 25px;
         }

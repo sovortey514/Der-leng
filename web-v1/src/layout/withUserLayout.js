@@ -2,19 +2,15 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/prop-types */
 import UilEllipsisV from '@iconscout/react-unicons/icons/uil-ellipsis-v';
-import { Button, Col, Layout, Row } from 'antd';
+import { Col, Layout, Row } from 'antd';
 import propTypes from 'prop-types';
 import { Component } from 'react';
-import { Scrollbars } from '@pezhmanparsaee/react-custom-scrollbars';
 import { connect } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
-import MenueItems from './MenueItems';
 import { FooterStyle, LayoutContainer, SmallScreenAuthInfo, TopMenuSearch } from './Style';
 import TopMenu from './TopMenu';
 import Search from '../components/utilities/auth-info/Search';
 import AuthInfo from '../components/utilities/auth-info/info';
-import { ReactComponent as MySVG } from '../static/img/icon/left-bar.svg';
 
 const { theme } = require('../config/theme/themeVariables');
 
@@ -57,28 +53,10 @@ const ThemeLayout = (WrappedComponent) => {
         });
       };
 
-      const toggleCollapsedMobile = () => {
-        if (window.innerWidth <= 990) {
-          this.setState({
-            collapsed: !collapsed,
-          });
-        }
-      };
-
       const onShowHide = () => {
         this.setState({
           hide: !hide,
         });
-      };
-
-      const SideBarStyle = {
-        margin: '63px 0 0 0',
-        padding: `${!rtl ? '20px 20px 55px 0' : '20px 0 55px 20px'}`,
-        overflowY: 'auto',
-        height: '100vh',
-        position: 'fixed',
-        [left]: 0,
-        zIndex: 988,
       };
 
       function renderThumb({ style }) {
@@ -88,19 +66,7 @@ const ThemeLayout = (WrappedComponent) => {
         };
         return <div style={{ ...style, ...thumbStyle }} />;
       }
-      const renderTrackVertical = () => {
-        const thumbStyle = {
-          position: 'absolute',
-          width: '6px',
-          transition: 'opacity 200ms ease 0s',
-          opacity: 0,
-          [rtl ? 'left' : 'right']: '0px',
-          bottom: '2px',
-          top: '2px',
-          borderRadius: '3px',
-        };
-        return <div className="[&>div]:bg-regular dark:[&>div]:bg-[#32333f]" style={thumbStyle} />;
-      };
+
       function renderView({ style }) {
         const customStyle = {
           marginRight: rtl && 'auto',
@@ -144,15 +110,6 @@ const ThemeLayout = (WrappedComponent) => {
                         alt="ដើរលេង"
                       />
                     </Link>
-                    {/* {!topMenu || window.innerWidth <= 991 ? (
-                      <Button
-                        type="link"
-                        className="p-0 bg-transparent border-none dark:border-transparent dark:bg-transparent dark:text-white60 dark:hover:text-primary text-[#525768] hover:text-primary"
-                        onClick={toggleCollapsed}
-                      >
-                        <MySVG />
-                      </Button>
-                    ) : <TopMenu />} */}
                     <TopMenu />
                   </div>
                 </div>
@@ -189,29 +146,6 @@ const ThemeLayout = (WrappedComponent) => {
               </Col>
             </Row>
             <Layout>
-              {/* {!topMenu || window.innerWidth <= 991 ? (
-                <ThemeProvider theme={theme}>
-                  <Sider
-                    width={280}
-                    style={SideBarStyle}
-                    collapsed={collapsed}
-                    theme={layoutMode === 'lightMode' ? 'light' : 'dark'}
-                  >
-                    <Scrollbars
-                      className="custom-scrollbar"
-                      autoHide
-                      autoHideTimeout={500}
-                      autoHideDuration={200}
-                      // renderThumbHorizontal={renderThumbHorizontal}
-                      renderThumbVertical={renderThumb}
-                      renderView={renderView}
-                      renderTrackVertical={renderTrackVertical}
-                    >
-                      <MenueItems topMenu={topMenu} toggleCollapsed={toggleCollapsedMobile} />
-                    </Scrollbars>
-                  </Sider>
-                </ThemeProvider>
-              ) : null} */}
               <div className='w-full'>
                 <Layout className="atbd-main-layout ">
                   <Content>

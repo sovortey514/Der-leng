@@ -2,12 +2,14 @@ import UilSearch from '@iconscout/react-unicons/icons/uil-search';
 import UilTimes from '@iconscout/react-unicons/icons/uil-times';
 import { Form, Input } from 'antd';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 // import { useSelector } from 'react-redux';
 
 const SearchBar = React.memo(() => {
-  const [form] = Form.useForm();
-
+  const navigate = useNavigate()
+  // const [searchParams, setSearchParams] = useSearchParams({search_query:''})
+  // const searchQuery = searchParams.get("search_query")
+  const [searchQuery, setSearchQuery] = useState('')
   const [state, setState] = useState({
     openSearch: false,
   });
@@ -25,9 +27,19 @@ const SearchBar = React.memo(() => {
       ...state,
       openSearch: false,
     });
+
+    // const params = new URLSearchParams(searchParams);
+    // params.delete('search_query');
+    // setSearchParams(params);
+
   };
 
   const { openSearch } = state;
+
+  const handleSearch = () => {
+    navigate(`/results/?search_query=${searchQuery}`)
+
+  }
 
   return (
     <div className="flex items-center ltr:mr-2.5 rtl:ml-2.5">
@@ -38,9 +50,11 @@ const SearchBar = React.memo(() => {
             : 'opacity-0 invisible w-0'
         }
       >
-        <Form form={form} name="hexadash-search">
+        <Form onFinish={handleSearch} name="hexadash-search">
           <Form.Item name="search-input" className="mb-0">
             <Input
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
               className="bg-transparent dark:bg-transparent p-1.5 min-ssm:border-none ssm:h-[48px] ssm:px-[20px] ssm:dark:shadow-none ssm:border-1 ssm:border-regular dark:ssm:border-white10"
               placeholder="Search Here"
             />

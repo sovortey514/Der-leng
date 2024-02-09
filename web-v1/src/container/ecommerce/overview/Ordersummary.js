@@ -9,7 +9,7 @@ import Heading from '../../../components/heading/heading';
 import { Button } from '../../../components/buttons/buttons';
 import { cartGetData } from '../../../redux/cart/actionCreator';
 
-function Ordersummary({ subtotal, checkout }) {
+function Ordersummary({ subtotal, checkout, discount }) {
   const dispatch = useDispatch();
   const { rtl } = useSelector((state) => {
     return {
@@ -59,14 +59,19 @@ function Ordersummary({ subtotal, checkout }) {
               </li>
               <li className="flex items-center justify-between mb-[18px]">
                 <span className="font-medium text-body dark:text-white60">Discount :</span>
-                <span className="font-medium text-dark dark:text-white87">{`$${-20}`}</span>
+                <span className="font-medium text-dark dark:text-white87">{`-$${discount}`}</span>
               </li>
-              <li className="flex items-center justify-between mb-[18px]">
+
+              {/* ============================> Ship Price <============================= */}
+              {/* <li className="flex items-center justify-between mb-[18px]">
                 <span className="font-medium text-body dark:text-white60">Shipping Charge :</span>
                 <span className="font-medium text-dark dark:text-white87">{`$${30}`}</span>
-              </li>
+              </li> */}
+
             </ul>
-            <Form form={form} name="promo" onFinish={submitPromo}>
+
+            {/* ============================> Coopong Form <============================= */}
+            {/* <Form form={form} name="promo" onFinish={submitPromo}>
               <Form.Item name="couponType" initialValue="" label="" className="mb-0">
                 <Select className="w-full  [&>.ant-select-selector]:pl-0 [&>.ant-select-selector]:border-none [&>.ant-select-selector]:shadow-none [&>.ant-select-selector]:right-0 [&>.ant-select-arrow]:text-body dark:[&>.ant-select-arrow]:text-white60 dark:text-white60 [&>.ant-select-arrow]:right-0 [&>div>.ant-select-selection-item]:flex [&>div>.ant-select-selection-item]:items-center [&>div>.ant-select-selection-item]:text-body dark:[&>div>.ant-select-selection-item]:text-white60 [&>div>.ant-select-selection-item]:font-medium ltr:[&>div>.ant-select-selection-item>img]:h-[14px] [&>div>.ant-select-selection-item>img]:mr-[5px] rtl:[&>div>.ant-select-selection-item>img]:h-[14px] [&>div>.ant-select-selection-item>img]:ml-[5px] [&>div]:bg-transparent dark:[&>div]:bg-transparent">
                   <Option value="">
@@ -103,10 +108,10 @@ function Ordersummary({ subtotal, checkout }) {
                   </Button>
                 </Form.Item>
               </div>
-            </Form>
+            </Form> */}
             <Heading className="inline-flex items-center justify-between w-full" as="h4">
               <span className="text-base font-semibold text-dark dark:text-white87">Total : </span>
-              <span className="text-lg font-semibold text-primary">{`$${subtotal + 30 - 20}`}</span>
+              <span className="text-lg font-semibold text-primary">{`$${subtotal - discount}`}</span>
             </Heading>
             {!checkout && (
               <Button
@@ -114,7 +119,7 @@ function Ordersummary({ subtotal, checkout }) {
                 type="secondary"
                 size="large"
               >
-                <Link to="/admin/ecommerce/checkout" className="flex items-center justify-center text-white">
+                <Link to="/checkout" className="flex items-center justify-center text-white">
                   Proceed To Checkout
                   {!rtl ? (
                     <UilAngleRight className="w-4 h-4 ltr:ml-1.5 rtl:mr-1.5" />

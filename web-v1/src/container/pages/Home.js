@@ -12,7 +12,8 @@ function Home() {
     return (
         <>
             <div id="promotion" className="flex justify-center" >
-                <div className="h-96 w-[96%] sm:h-64 xl:h-80 2xl:h-96">
+                {/* <div className="h-96 w-[96%] sm:h-64 xl:h-80 2xl:h-96"> */}
+                <div className="h-40 w-[96%] min-md:h-64 min-lg:h-80 min-xl:h-96">
                     <Carousel pauseOnHover>
                         <img src="https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcSHeS_vH7Pkhgfvohsiu0h1Q6bbFR2roHlk5ZYPVYQv3lz6LlxOFDbA1VnQDPph-U2Z" alt="..." />
                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Ankor_Wat_temple.jpg/1200px-Ankor_Wat_temple.jpg" alt="..." />

@@ -114,7 +114,7 @@ const AuthInfo = React.memo(() => {
           </li> */}
           <li>
             <Link
-              to="#"
+              to="/booking"
               className="inline-flex items-center hover:bg-shadow-transparent text-light dark:text-white60 dark:hover:text-white hover:text-primary dark:hover:bg-white10 dark:rounded-4 hover:pl-6 w-full px-2.5 py-3 text-sm transition-all ease-in-out delay-150"
             >
               <UilDollarSign className="w-4 h-4 ltr:mr-3 rtl:ml-3" /> Billing
@@ -209,7 +209,7 @@ const AuthInfo = React.memo(() => {
       </div>
       <Message />
       <Notification />
-      <PaymentBox/>
+      {/* <PaymentBox/> */}
       <CartBox/>
 
     {/* =====================> Setting and Flag <===================== */}

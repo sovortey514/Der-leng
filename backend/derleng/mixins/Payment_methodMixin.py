@@ -1,8 +1,11 @@
 #===============================================> Local Import
 from backend.settings import STRIPE_SECRET_KEY
 from derleng.serializers import Payment_methodSerializer
+from derleng.models import Payment_method
 
 #===============================================> Library
+from rest_framework.response import Response
+from rest_framework import status
 import stripe
 
 
@@ -33,12 +36,21 @@ class Payment_methodMixin:
                 customer=customer.id,
                 type=request_data["type"]
             ).data
-
+            
+            # isPaymentMethodExist = Payment_method.objects.filter(last4=request_data["last4"]).exists()
+            # if isPaymentMethodExist:
+            #     message = "Sorry, the payment method you're attempting to add already exists in our system. Please double-check your payment details or choose a different payment method."
+            #     raise ValueError(message)
+            
             if payment_method_id not in [existing_payment_method.id for existing_payment_method in existing_payment_methods]:
-                stripe.PaymentMethod.attach(
-                    payment_method_id,
-                    customer=customer.id
-                )
+                try:
+                    stripe.PaymentMethod.attach(
+                        payment_method_id,
+                        customer=customer.id
+                    )
+                except Exception as error:
+                    raise Exception(error)
+                
 
             else:
                 error = "Payment method already associated with the customer."

@@ -12,7 +12,7 @@ class CartAPIView(APIView):
 
     def get(self , request):
         try:
-            cartList = request.user.cart_set.all()
+            cartList = request.user.cart_set.filter(booking_details__isnull=True).distinct()
             serializer = MediumCartSerializer(cartList , many = True)
             
             return Response(serializer.data , status=status.HTTP_200_OK)

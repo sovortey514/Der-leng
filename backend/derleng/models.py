@@ -65,6 +65,7 @@ class Package (models.Model):
     video_url = models.CharField(max_length=255, null=True, blank=True)
     commission = models.ForeignKey(Commission, on_delete=models.SET_NULL, null=True, default=None)
     is_close = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f'{self.name}'
@@ -141,6 +142,7 @@ class Payment_method (models.Model):
     exp_year = models.IntegerField()
     is_active = models.BooleanField(default=True)
     is_default = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f'**** **** **** {self.last4}'
@@ -162,7 +164,7 @@ class Cart (models.Model):
             editable = False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     service = models.ForeignKey(Package_service, on_delete=models.CASCADE)
-    customer_ammount = models.IntegerField()
+    customer_amount = models.IntegerField()
     booking_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     

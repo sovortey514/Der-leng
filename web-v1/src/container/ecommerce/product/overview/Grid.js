@@ -2,6 +2,8 @@ import React from 'react';
 import { Row, Col, Spin } from 'antd';
 import ProductCards from './ProductCards';
 import Heading from '../../../../components/heading/heading';
+import NoResult from '../../../pages/NoResult';
+import { Link } from 'react-router-dom';
 
 function Grid({state}) {
   const {packages, isLoader, isLoadMore} = state;
@@ -18,15 +20,15 @@ function Grid({state}) {
         packages.map(({ id, name, amount_rating, avg_rating, default_price, percentage_discount, address, thumbnail }) => {
           return (
             <Col xxl={6} lg={8} md={12} xs={24} key={id}>
-              <ProductCards product={{ id, name, amount_rating, avg_rating, default_price, percentage_discount, popular: false, address, thumbnail }} />
+              <Link to={`/tour-service/${id}`}>
+                <ProductCards product={{ id, name, amount_rating, avg_rating, default_price, percentage_discount, popular: false, address, thumbnail }} />
+              </Link>
             </Col>
           );
         })
       ) : (
         <Col md={24}>
-          <>
-            <Heading as="h1">Data Not Found</Heading>
-          </>
+          <NoResult/>
         </Col>
       )}
       {isLoadMore && 

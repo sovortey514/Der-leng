@@ -17,10 +17,17 @@ from derleng.tasks import cancel_payment_task
 from derleng.mixins import BookingMixin
 from derleng.models import Booking, Payment_method
 from derleng.mixins.Payment_methodMixin import create_payment_intent
-from derleng.serializers import BookingSerializer, Customer_paymentsSerializer
+from derleng.serializers import BookingSerializer, Customer_paymentsSerializer, MediumBookingSerializer
 
 class BookingPackageAPIView(APIView, BookingMixin.BookingMixin):
     permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            bookingList = request.user.booking_set.all().order_by("-created_at")
+            return Response(MediumBookingSerializer(bookingList, many=True).data, status=status.HTTP_200_OK)
+        except Exception as error:
+            return Response({"errors": str(error)}, status=status.HTTP_404_NOT_FOUND)
 
     @transaction.atomic
     def post(self, request):
@@ -56,6 +63,6 @@ class BookingPackageAPIView(APIView, BookingMixin.BookingMixin):
             }
 
             return Response(response, status=status.HTTP_200_OK)
-        except Exception as errers:
+        except Exception as errors:
             transaction.set_rollback(True)
-            return Response({"errers": str(errers)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"errors": str(errors)}, status=status.HTTP_400_BAD_REQUEST)

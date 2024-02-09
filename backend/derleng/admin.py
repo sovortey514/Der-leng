@@ -48,7 +48,7 @@ class PaymentMethodAdmin(admin.ModelAdmin):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'service', 'customer_ammount', 'booking_date', 'created_at')
+    list_display = ('id', 'user', 'service', 'customer_amount', 'booking_date', 'created_at')
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):

@@ -1206,3 +1206,7 @@ hr{
 .ant-alert-close-icon .anticon-close{
   @apply dark:text-white60 dark:hover:text-white87;
 }
+
+/* .ant-steps-item-container::after {
+  display: none;
+} */

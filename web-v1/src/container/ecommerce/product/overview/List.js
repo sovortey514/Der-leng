@@ -1,10 +1,11 @@
 import React from 'react';
 import { Row, Col, Spin } from 'antd';
 import ProductCardsList from './ProductCardList';
-import Heading from '../../../../components/heading/heading';
+import NoResult from '../../../pages/NoResult';
+import { Link } from 'react-router-dom';
 
 function List({ state }) {
-  const { packages, isLoader, isLoadMore } = state;
+  const { packages=[], isLoader=true, isLoadMore=false } = state || {};
 
   return (
     <Row gutter={15}>
@@ -13,16 +14,18 @@ function List({ state }) {
           <Spin />
         </div>
       ) : packages.length ? (
-        packages.map(({ id, name, amount_rating, avg_rating, default_price, percentage_discount, address, thumbnail }) => {
+        packages.map(({ id, name, amount_rating, avg_rating, default_price, percentage_discount, address, thumbnail, description }) => {
           return (
             <Col xs={24} key={id}>
-              <ProductCardsList product={{ id, name, amount_rating, avg_rating, default_price, percentage_discount, address, thumbnail, description: "", popular: false }} />
+              <Link to={`/tour-service/${id}`}>
+                <ProductCardsList product={{ id, name, amount_rating, avg_rating, default_price, percentage_discount, address, thumbnail, description, popular: false }} />
+              </Link>
             </Col>
           );
         })
       ) : (
         <Col xs={24}>
-          <Heading as="h1">Data Not Found</Heading>
+          <NoResult/>
         </Col>
       )}
       {isLoadMore &&

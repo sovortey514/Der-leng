@@ -1,57 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Table, Form, Input, Spin } from 'antd';
+import { Row, Col, Table, Form, Input, Spin, message } from 'antd';
 import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
 import UilMinus from '@iconscout/react-unicons/icons/uil-minus';
 import UilTrashAlt from '@iconscout/react-unicons/icons/uil-trash-alt';
-import { useDispatch, useSelector } from 'react-redux';
 import { GlobalUtilityStyle } from '../../styled';
 import Heading from '../../../components/heading/heading';
 import { Button } from '../../../components/buttons/buttons';
-import { cartGetData, cartUpdateQuantity, cartDelete } from '../../../redux/cart/actionCreator';
+import { deleteCart, putCart } from '../../../hooks/Product/useCartFetcher';
+import { formatDate } from '../../../service/date';
 
-function CartTable() {
-  const dispatch = useDispatch();
-  const { cartData, isLoading } = useSelector((state) => {
-    return {
-      cartData: state.cart.data,
-      isLoading: state.cart.loading,
-      rtl: state.ChangeLayoutMode.rtlData,
-    };
-  });
+const FILE_ENDPOINT = process.env.REACT_APP_FILE_ENDPOINT
 
-  const [form] = Form.useForm();
+function CartTable({dataProp, setRefreshData}) {
+  const cartData = dataProp.carts
+  const isLoading = dataProp.isLoader
+  
   const [state, setState] = useState({
     coupon: 0,
     promo: 0,
     current: 0,
   });
 
-  useEffect(() => {
-    if (cartGetData) {
-      dispatch(cartGetData());
-    }
-  }, [dispatch]);
-
   const incrementUpdate = (id, quantity) => {
     const data = parseInt(quantity, 10) + 1;
-    dispatch(cartUpdateQuantity(id, data, cartData));
+    const customer_amount = data;
+    putCart({customer_amount, id});
+    setRefreshData(true);
   };
 
   const decrementUpdate = (id, quantity) => {
     const data = parseInt(quantity, 10) >= 2 ? parseInt(quantity, 10) - 1 : 1;
-    dispatch(cartUpdateQuantity(id, data, cartData));
+    const customer_amount = data;
+    putCart({customer_amount, id});
+    setRefreshData(true);
   };
 
   const cartDeleted = (id) => {
-    const confirm = window.confirm('Are you sure to delete this product?');
-    if (confirm) dispatch(cartDelete(id, cartData));
-  };
+      deleteCart(id);
+      message.success('Cart delete successfully!');
+      setRefreshData(true);
+  }
 
   const productTableData = [];
 
   if (cartData !== null) {
     cartData.map((data) => {
-      const { id, img, name, quantity, price, size, color } = data;
+      const { id, customer_amount, booking_date, created_at, service } = data;
+      const productData = data["package"]
       return productTableData.push({
         key: id,
         product: (
@@ -60,27 +55,27 @@ function CartTable() {
               <img
                 className="max-w-[80px] min-h-[80px] ltr:mr-[25px] rtl:ml-[25px] rounded-[10px]"
                 style={{ width: 80 }}
-                src={require(`../../../${img}`)}
+                src={ productData.thumbnail ? `${FILE_ENDPOINT}/${productData.thumbnail}` : require(`../../../../src/static/img/default_img/travel-cambodia.png`)}
                 alt=""
               />
               <figcaption>
                 <div className="cart-single__info">
                   <Heading as="h6" className="text-base font-medium text-dark dark:text-white87">
-                    {name}
+                    {productData.name}
                   </Heading>
                   <ul className="flex items-center mb-0">
                     <li className="ltr:mr-5 rtl:ml-5">
                       <span className="text-dark dark:text-white87 ltr:mr-[5px] rtl:ml-[5px] text-[15px] font-medium">
-                        Size :
+                        Service :
                       </span>
-                      <span className="text-body dark:text-white60 text-[15px]">{size}</span>
+                      <span className="text-body dark:text-white60 text-[15px]">{service.detail}</span>
                     </li>
                     <li>
                       <span className="text-dark dark:text-white87 ltr:mr-[5px] rtl:ml-[5px] text-[15px] font-medium">
                         {' '}
-                        Color :
+                        Booking Date :
                       </span>
-                      <span className="text-body dark:text-white60 text-[15px]">{color}</span>
+                      <span className="text-body dark:text-white60 text-[15px]">{formatDate(booking_date)}</span>
                     </li>
                   </ul>
                 </div>
@@ -88,19 +83,19 @@ function CartTable() {
             </figure>
           </div>
         ),
-        price: <span className="text-body dark:text-white60 text-[15px]">${price}</span>,
+        price: <span className="text-body dark:text-white60 text-[15px]">${service.price}</span>,
         quantity: (
           <div className="cart-single-quantity">
             <Button
-              onClick={() => decrementUpdate(id, quantity)}
+              onClick={() => decrementUpdate(id, customer_amount)}
               className=" bg-normalBG dark:bg-normalBGdark w-9 h-9 ltr:mr-4 rtl:ml-4 px-3 text-body dark:text-white60 border-none rounded-[10px]"
               type="default"
             >
               <UilMinus className="w-[12px] h-[12px]" />
             </Button>
-            {quantity}
+            {customer_amount}
             <Button
-              onClick={() => incrementUpdate(id, quantity)}
+              onClick={() => incrementUpdate(id, customer_amount)}
               className=" bg-normalBG dark:bg-normalBGdark w-9 h-9 ltr:ml-4 rtl:mr-4 px-3 text-body dark:text-white60 border-none rounded-[10px]"
               type="default"
             >
@@ -110,7 +105,7 @@ function CartTable() {
         ),
         total: (
           <span className="inline-block min-w-[80px] text-primary text-[15px] font-semibold">
-            ${(quantity * price).toFixed(2)}
+            ${(customer_amount * service.price).toFixed(2)}
           </span>
         ),
         action: (
@@ -134,7 +129,7 @@ function CartTable() {
 
   const productTableColumns = [
     {
-      title: 'Product',
+      title: 'Package',
       dataIndex: 'product',
       key: 'product',
     },
@@ -144,7 +139,7 @@ function CartTable() {
       key: 'price',
     },
     {
-      title: 'Quantity',
+      title: 'Tourist',
       dataIndex: 'quantity',
       key: 'quantity',
     },
@@ -177,8 +172,8 @@ function CartTable() {
           </div>
         )}
       </GlobalUtilityStyle>
-
-      <div className="mt-[10px] mb-[20px]">
+      {/* =========================================> Apply Coupon <=========================================< */}
+      {/* <div className="mt-[10px] mb-[20px]">
         <Form form={form} name="submitCoupon" onFinish={submitCoupon}>
           <Row gutter={15}>
             <Col lg={4} sm={8} xs={24}>
@@ -201,7 +196,7 @@ function CartTable() {
             </Col>
           </Row>
         </Form>
-      </div>
+      </div> */}
     </>
   );
 }

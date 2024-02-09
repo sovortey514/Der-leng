@@ -1,7 +1,7 @@
 import React, { lazy, useState, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Radio, Spin } from 'antd';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import UilApps from '@iconscout/react-unicons/icons/uil-apps';
 import UilListUl from '@iconscout/react-unicons/icons/uil-list-ul';
 import { PageHeader } from '../../../components/page-headers/page-headers';
@@ -9,7 +9,7 @@ import { PageHeader } from '../../../components/page-headers/page-headers';
 // ==============================> Local <==============================
 import { AutoComplete } from '../../../components/autoComplete/autoComplete';
 import { sorting } from '../../../redux/product/actionCreator';
-import usePackageFetcher from '../../../hooks/Product/usePackageFetcher';
+import {usePackageFetcher} from '../../../hooks/Product/usePackageFetcher';
 
 const Grid = lazy(() => import('./overview/Grid'));
 const List = lazy(() => import('./overview/List'));
@@ -42,21 +42,18 @@ function Product() {
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const view = params.get('view') || 'grid';
-
-  const handleSearch = (searchText) => {
-    const data = searchData.filter((item) => item.title.toUpperCase().startsWith(searchText.toUpperCase()));
-    setState({
-      ...state,
-      notData: data,
-    });
-  };
+  const otherParams =  window.location.search.substring(1).replaceAll("&view=list", "").replaceAll("&view=grid", "");
+  const pathname = window.location.pathname;
+  const navigate = useNavigate()
+  const oldSortParam = params.get('sort_by') || '';
 
   const onSorting = (e) => {
-    dispatch(sorting(e.target.value));
+    const other = window.location.search.substring(1).replaceAll(`&sort_by=${oldSortParam}`, "")
+    navigate(`${pathname}?${other}&sort_by=${e.target.value}`)
   };
 
-  const [activeSort, setActiveSort] = useState('top-rated');
-  const [activeView, setActiveView] = useState('grid');
+  const [activeSort, setActiveSort] = useState('top_rated');
+  const [activeView, setActiveView] = useState(view);
 
   return (
     <>
@@ -67,24 +64,29 @@ function Product() {
       />
       <main className="min-h-[715px] lg:min-h-[580px] bg-transparent px-8 xl:px-[15px] pb-[50px] ssm:pb-[30px]">
         <div className="items-center flex flex-wrap justify-between 3xl:justify-center mb-[30px] gap-y-[15px]">
-          <div className="flex items-center flex-wrap gap-[25px] min-3xl:[&>div>div>span>span]:w-[360px] [&>div>div>span>.ant-input-affix-wrapper]:!border-none [&>div>div>span>.ant-input-affix-wrapper>input]:focus:!border-none [&>div>div]:!h-[48px] [&>div]:!w-auto [&>div]:!border-none 3xl:justify-center">
+
+          {/* ================================> Search Prduct <================================ */}
+          {/* <div className="flex items-center flex-wrap gap-[25px] min-3xl:[&>div>div>span>span]:w-[360px] [&>div>div>span>.ant-input-affix-wrapper]:!border-none [&>div>div>span>.ant-input-affix-wrapper>input]:focus:!border-none [&>div>div]:!h-[48px] [&>div]:!w-auto [&>div]:!border-none 3xl:justify-center">
             <AutoComplete onSearch={handleSearch} dataSource={notData} placeholder="Search" patterns />
             <p className="mb-0 text-body dark:text-white60">Showing 1–8 of 86 results</p>
-          </div>
+          </div> */}
+
+
+          {/* ================================> Sort Nav Prduct <================================ */}
           <div className="flex items-center flex-wrap gap-[25px] 3xl:justify-center">
             <div className="text-body dark:text-white60 flex flex-wrap items-center gap-[20px] 3xl:justify-center">
               <span>Sort by:</span>
               <Radio.Group
                 onChange={onSorting}
-                defaultValue="rate"
+                defaultValue="-amount_rating,-avg_rating"
                 className="bg-white dark:bg-[#1b1d2a] px-[10px] 4xl:px-0 border-transparent dark:border-1 dark:border-white10 rounded-4"
               >
                 <Radio.Button
-                  value="rate"
+                  value="-amount_rating,-avg_rating"
                   onClick={() => {
-                    setActiveSort('top-rated');
+                    setActiveSort('top_rated');
                   }}
-                  className={`bg-transparent h-10 leading-[42px] px-3 border-none shadow-none before:bg-section dark:before:bg-white10 before:h-1/2 before:top-1/2 before:-translate-y-1/2 ${activeSort === 'top-rated'
+                  className={`bg-transparent h-10 leading-[42px] px-3 border-none shadow-none before:bg-section dark:before:bg-white10 before:h-1/2 before:top-1/2 before:-translate-y-1/2 ${activeSort === 'top_rated'
                       ? 'text-primary dark:text-white87'
                       : 'text-light-extra dark:text-white60'
                     }`}
@@ -92,6 +94,18 @@ function Product() {
                   Top Rated
                 </Radio.Button>
                 <Radio.Button
+                  value="-created_at"
+                  onClick={() => {
+                    setActiveSort('newest');
+                  }}
+                  className={`bg-transparent h-10 leading-[42px] px-3 border-none shadow-none before:bg-section dark:before:bg-white10 before:h-1/2 before:top-1/2 before:-translate-y-1/2 ${activeSort === 'newest'
+                      ? 'text-primary dark:text-white87'
+                      : 'text-light-extra dark:text-white60'
+                    }`}
+                >
+                  Newest
+                </Radio.Button>
+                {/* <Radio.Button
                   value="popular"
                   onClick={() => {
                     setActiveSort('popular');
@@ -104,18 +118,6 @@ function Product() {
                   Popular
                 </Radio.Button>
                 <Radio.Button
-                  value="time"
-                  onClick={() => {
-                    setActiveSort('newest');
-                  }}
-                  className={`bg-transparent h-10 leading-[42px] px-3 border-none shadow-none before:bg-section dark:before:bg-white10 before:h-1/2 before:top-1/2 before:-translate-y-1/2 ${activeSort === 'newest'
-                      ? 'text-primary dark:text-white87'
-                      : 'text-light-extra dark:text-white60'
-                    }`}
-                >
-                  Newest
-                </Radio.Button>
-                <Radio.Button
                   value="price"
                   onClick={() => {
                     setActiveSort('price');
@@ -124,12 +126,12 @@ function Product() {
                     }`}
                 >
                   Price
-                </Radio.Button>
+                </Radio.Button> */}
               </Radio.Group>
             </div>
             <div className="flex items-center">
               <NavLink
-                to={`${path}/?view=grid`}
+                to={`${pathname}?${otherParams}&view=grid`}
                 onClick={() => {
                   setActiveView('grid');
                 }}
@@ -141,7 +143,7 @@ function Product() {
                 <UilApps className="w-4 h-4" />
               </NavLink>
               <NavLink
-                to={`${path}/?view=list`}
+                to={`${pathname}?${otherParams}&view=list`}
                 onClick={() => {
                   setActiveView('list');
                 }}

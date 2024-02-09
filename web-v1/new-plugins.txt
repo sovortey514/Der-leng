@@ -1,4 +1,5 @@
 =============================> UI Library <========================
 flowbite-react
+npm i -D daisyui@latest
 
 npm i react-phone-number-input

@@ -24,7 +24,7 @@ class Payment_methodAPIView(APIView, Payment_methodMixin.Payment_methodMixin):
 
     def get(self, request):
         try:
-            payments = Payment_method.objects.filter(user=request.user)
+            payments = Payment_method.objects.filter(user=request.user).order_by('-created_at')
             serializers = BasicPayment_methodSerializer(payments , many=True)
             return Response(serializers.data , status=status.HTTP_200_OK)
         except Exception as error:
@@ -45,7 +45,7 @@ class Payment_methodAPIView(APIView, Payment_methodMixin.Payment_methodMixin):
     def delete(self, request, pk):
         try:
             instance = Payment_method.objects.get(pk=pk)
-            stripe.PaymentMethod.detach(instance.payment_method_id)
+            stripe.PaymentMethod.detach(instance.stripe_payment_method_id)
             instance.delete()
             return Response({"message": "Payment method deleted sucessfully."}, status=status.HTTP_200_OK)
         except Exception as error:

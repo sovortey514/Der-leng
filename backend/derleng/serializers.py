@@ -20,6 +20,11 @@ class Package_serviceSerializer(serializers.ModelSerializer):
         model = Package_service
         fields = '__all__'
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["price"] = instance.price / 100 #Update from cent to dollar
+        return data
+
 class Package_imageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package_image
@@ -45,7 +50,7 @@ class BasicPackageSerializer(serializers.ModelSerializer):
 class SmallPackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
-        fields = ('id', 'name')
+        fields = ('id', 'name', "percentage_discount")
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -55,14 +60,15 @@ class SmallPackageSerializer(serializers.ModelSerializer):
 class MediumPackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
-        fields = ('id', 'name', 'address', 'percentage_discount')
+        fields = ('id', 'name', 'address', 'percentage_discount','description')
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
         data['thumbnail'] = get_thumbnail_image(instance)
+        data['description'] = ' '.join(instance.description.split()[:40])
         data['user'] = {"id": instance.user.id, "fullname": instance.user.fullname}
-        data['default_price'] = instance.package_service_set.first().price
+        data['default_price'] = instance.package_service_set.first().price / 100   #Update from cent to dollar
         data['schedule_place'] = instance.package_schedule_set.first().destination
         data['avg_rating'] = instance.review_set.all().aggregate(Avg("rating", default=0))['rating__avg']
         data['amount_rating'] = instance.review_set.count()
@@ -77,6 +83,13 @@ class PackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
         fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        data['avg_rating'] = instance.review_set.all().aggregate(Avg("rating", default=0))['rating__avg']
+        data['amount_rating'] = instance.review_set.count()
+        return data
 
 # =======================> Package Serializers Mixin <======================= 
         
@@ -134,16 +147,29 @@ class MediumCartSerializer(serializers.ModelSerializer):
         data['package'] = SmallPackageSerializer(package).data
         data['service'] = Package_serviceSerializer(service).data
         return data
-        
-class BookingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Booking
-        fields = '__all__'
 
 class Booking_detailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking_details
         fields = '__all__'
+
+        
+class BookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = '__all__'
+    
+class MediumBookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = ['id', 'customer', 'total_price', 'currency', 'created_at']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        cartList = Cart.objects.filter(booking_details__booking_id=instance.id)
+        data['total_price'] = instance.total_price / 100
+        data["carts"] = MediumCartSerializer(cartList, many=True).data
+        return data
         
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,3 +1,4 @@
+from django.db.models import Q, Avg, Count
 from django.forms import ValidationError
 from rest_framework import viewsets, filters, status
 from rest_framework.response import Response
@@ -18,16 +19,25 @@ class PackageViewSet(viewsets.ModelViewSet, PackageMixin.PackageMixin):
     queryset = Package.objects.all()
     serializer_class = MediumPackageSerializer
     permission_classes = [IsAdminOrStaffOrTourGuideOrReadOnly]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = '__all__'
+    ordering_fields = ['created_at', 'avg_rating', 'amount_rating']
     search_fields = ["name", "description", "package_service__detail", "package_schedule__destination", "address"]
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
         category_name = self.request.query_params.get('category_name')
         if category_name:
             queryset = queryset.filter(category__name=category_name)
+
+        queryset = queryset.annotate(avg_rating=Avg('review__rating'), amount_rating=Count('review'))
         return queryset
+    
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return PackageSerializer
+        return super().get_serializer_class()
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
