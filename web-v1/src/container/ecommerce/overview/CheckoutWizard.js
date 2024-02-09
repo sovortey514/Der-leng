@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { Row, Col, Form, Input, Select, Radio, Table, Spin, message } from 'antd';
+import { Row, Col, Form, Input, Select, Radio, Table, Spin, message, notification } from 'antd';
 import { Link } from 'react-router-dom';
 import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
 import UilMinus from '@iconscout/react-unicons/icons/uil-minus';
@@ -102,9 +102,9 @@ function CheckOut({ dataProp, setRefreshCartData }) {
       payment_method: JSON.parse(paymentMethodSelected).id,
       carts: JSON.stringify(carts)
     }
-
+    
     const response = await postBooking(data)
-
+    
     if(response.status === 200) {
       setState({
         ...state,
@@ -114,13 +114,13 @@ function CheckOut({ dataProp, setRefreshCartData }) {
       });
     }
     else {
-
+      
       notification.error({
         message: 'Failed Checkout!',
         description:`We apologize, but it seems there was an issue processing your order at this time. Please double-check your payment information and try again. If the problem persists, feel free to reach out to our customer support team for assistance. Thank you for your patience and understanding`,
       });
     }
-
+    
     setIsModalOpen(false)
   };
 
@@ -133,8 +133,8 @@ function CheckOut({ dataProp, setRefreshCartData }) {
       message.error("Please select a payment method to proceed with your purchase!")
       return
     }
-    if(!cartData) {
-      message.warning("We're sorry, but it appears that your shopping cart is currently empty. Please feel free to browse our products and add items to your cart to complete your purchase. Thank you for visiting!")
+    if(cartData.length===0) {
+      message.warning("We're sorry, but it appears that your shopping cart is currently empty!")
       return
     }
     setIsModalOpen(true)

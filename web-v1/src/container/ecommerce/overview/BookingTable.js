@@ -101,7 +101,7 @@ function BookingTable({dataProp}) {
   ];
 
   return (
-    <div className="bg-regularBG dark:bg-white10 mb-[25px] p-[25px] rounded-[15px]">
+    <div className="w-full dark:bg-white10 mb-[25px] p-[25px] rounded-[15px]">
       <div className="border-b table-responsive table-bg-transparent table-head-none hover-tr-none table-td-border-none border-regular dark:border-white10">
         <Table pagination={false} dataSource={dataSource} columns={columns} />
       </div>

@@ -83,7 +83,7 @@ const AuthInfo = React.memo(() => {
               src={
                 user.profile_image ?
                 `${FILE_ENDPOINT}${user.profile_image}` : 
-                require('../../../static/img/avatar/chat-auth.png')
+                require('../../../static/img/default_img/derleng-default-profile.png')
               }
               alt="" 
             />
@@ -230,7 +230,7 @@ const AuthInfo = React.memo(() => {
             src={
                 user.profile_image ?
                 `${FILE_ENDPOINT}${user.profile_image}` : 
-                require('../../../static/img/avatar/chat-auth.png')
+                require('../../../static/img/default_img/derleng-default-profile.png')
               } />
             <span className="ltr:mr-1.5 rtl:ml-1.5 ltr:ml-2.5 rtl:mr-2.5 text-body dark:text-white60 text-sm font-medium md:hidden">
               {user.fullname}

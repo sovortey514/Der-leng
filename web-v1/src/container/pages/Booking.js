@@ -67,9 +67,9 @@ function BookingPage() {
                 <Row gutter={30}>
                   {data.map(({carts, created_at, currency, customer, id, total_price}) => {
                     return (
-                      <div key={id}>
+                      <>
                       {(carts.length !== 0) &&
-                        <Col xxl={17} xs={24} key={id}>
+                        <Col xxl={17} xs={24} key={id} >
                           <Suspense
                             fallback={
                               <div className="bg-white dark:bg-white10 p-[25px] rounded-[10px]">
@@ -83,7 +83,7 @@ function BookingPage() {
                           </Suspense>
                         </Col>
                       }
-                      </div>
+                      </>
                     )
                   })}
                 </Row>
