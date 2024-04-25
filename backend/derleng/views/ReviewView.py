@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.views import APIView
@@ -6,16 +7,18 @@ from derleng.models import *
 from derleng.serializers import *
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated , IsAuthenticatedOrReadOnly
+from rest_framework.pagination import PageNumberPagination
 
 class ReviewAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = PageNumberPagination
+    page_size = 10
+
     def post(self  , request , *args, **kwargs):
         try:
-            print(request.user)
             data = request.data.copy()
             data['user'] = request.user.id
             data['package'] = data['package_id']
-            print(data)
             serializers = ReviewSerializer(data=data)
             serializers.is_valid(raise_exception=True)
             serializers.save()
@@ -25,14 +28,22 @@ class ReviewAPIView(APIView):
                 'review_data' : serializers.data
             }
             return Response( respone_data , status=status.HTTP_201_CREATED)
+        
         except Exception as error:
-            return Response( {'error' : str(error)} , status=status.HTTP_400_BAD_REQUEST)
+            return Response( error.detail , status=status.HTTP_400_BAD_REQUEST)
         
     def get(self ,request):
         try:
-            reviewList = Review.objects.all()
-            serializers = ReviewSerializer(reviewList , many = True)
-            return Response(serializers.data , status=status.HTTP_201_CREATED)
+            reviewList = Review.objects.all().order_by("-created_at")
+
+            package_param = self.request.query_params.get("package", None)
+            if package_param:
+                reviewList = Review.objects.filter(package__id=package_param).order_by("-created_at")
+
+            paginator = self.pagination_class()
+            results = paginator.paginate_queryset(reviewList, request)
+            serializers = ReviewSerializer(results , many = True)
+            return paginator.get_paginated_response(serializers.data)
         except Exception as error:
             return Response( {'error' : str(error)} , status=status.HTTP_400_BAD_REQUEST)
         

@@ -1,5 +1,6 @@
 import React from 'react';
 import UilEnvelope from '@iconscout/react-unicons/icons/uil-envelope';
+import UilFavorite from '@iconscout/react-unicons/icons/uil-favorite';
 import UilUserPlus from '@iconscout/react-unicons/icons/uil-user-plus';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -9,13 +10,14 @@ import { Button } from '../../../components/buttons/buttons';
 
 function UserCards({ user }) {
   const { name, designation, img } = user;
+  const path = '.';
   return (
     <div className="relative">
-      <div className="bg-white dark:bg-white10 px-[25px] pt-[30px] pb-[18px] rounded-[10px] text-center">
-        <figure className="mb-0">
+      <div className="bg-white dark:bg-white10 px-[25px] pt-[30px] pb-[18px] rounded-[10px] text-center flex flex-col items-center">
+        <figure className="mb-[18px] h-[120px] w-[120px]">
           <img
-            className="mb-[18px] max-w-[120px] w-full rounded-full inline-block"
-            src={require(`../../../${img}`)}
+            className="max-w-full max-h-full w-full h-full rounded-full inline-block object-cover"
+            src={img}
             alt=""
           />
         </figure>
@@ -29,11 +31,32 @@ function UserCards({ user }) {
                 {name}
               </Link>
             </Heading>
-            <p className="text-[13px] mb-[25px] text-light dark:text-white60">{designation}</p>
+            <p className="text-[13px] mb-[18px] text-success font-medium">{designation}</p>
           </div>
 
           <div className="static flex flex-wrap items-center justify-center gap-[10px]">
+            <Link to={`${path}/favorite`}>
             <Button
+              className="group text-[13px] font-semibold text-theme-gray dark:text-white87 btn-outlined h-[40px] dark:border-white10 px-[25px] rounded-[6px] flex items-center gap-[5px] leading-[22px] hover:text-white hover:bg-primary transition duration-300 dark:bg-transparent border-normal"
+              size="default"
+            >
+              <UilFavorite className="w-[15px] h-[15px] text-light dark:text-white87 group-hover:text-white transition duration-300" />
+              Favorite
+            </Button>
+            </Link>
+            <Link to={`${path}/edit`}>
+              <Button
+                className="group text-[13px] border-normal font-semibold text-theme-gray dark:text-white87 btn-outlined h-[40px] dark:border-white10 px-[25px] rounded-[6px] flex items-center gap-[5px] leading-[22px] hover:text-white hover:bg-primary transition duration-300 dark:bg-primary"
+                size="default"
+              >
+                <UilUserPlus className="w-[14px] h-[14px] text-light dark:text-white87 group-hover:text-white transition duration-300" />
+                Edit Profile
+              </Button>
+            </Link>
+
+            {/* ===========================================> Message & follow Btn <=========================================== */}
+                
+            {/* <Button
               className="group text-[13px] font-semibold text-theme-gray dark:text-white87 btn-outlined h-[40px] dark:border-white10 px-[25px] rounded-[6px] flex items-center gap-[5px] leading-[22px] hover:text-white hover:bg-primary transition duration-300 dark:bg-transparent border-normal"
               size="default"
             >
@@ -46,9 +69,11 @@ function UserCards({ user }) {
             >
               <UilUserPlus className="w-[14px] h-[14px] text-light dark:text-white87 group-hover:text-white transition duration-300" />
               Following
-            </Button>
+            </Button> */}
           </div>
-          <div className="static pt-[20px] mt-[18px] dark:border-white10 border-t-1">
+
+          {/* =====================> Qty of Revenue order product <===================== */}
+          {/* <div className="static pt-[20px] mt-[18px] dark:border-white10 border-t-1">
             <Row gutter={15}>
               <Col xs={8}>
                 <div>
@@ -75,7 +100,7 @@ function UserCards({ user }) {
                 </div>
               </Col>
             </Row>
-          </div>
+          </div> */}
         </figcaption>
       </div>
     </div>

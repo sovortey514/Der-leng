@@ -27,8 +27,8 @@ class BookingMixin:
             serializer = Booking_detailsSerializer(data=booking_details_data)
             serializer.is_valid(raise_exception=True)
             booking_details_inst = serializer.save()
-            discount_price = (Decimal('100.00') - Decimal(booking_details_inst.percentage_discount)) * Decimal(booking_details_inst.unit_price) / Decimal('100.00')
-            total_price = total_price + discount_price
+            discounted_price = (Decimal('100.00') - Decimal(booking_details_inst.percentage_discount)) * Decimal(booking_details_inst.unit_price) / Decimal('100.00')
+            total_price = total_price + (discounted_price * cart_instance.customer_amount)
 
             #=========================================> Start Notificate Seller For Accept
 

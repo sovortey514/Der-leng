@@ -37,7 +37,7 @@ function ProductCards({ product }) {
         </Link>
         <Heading className="mb-1 text-lg font-semibold" as="h5">
           <Link
-            to={`/admin/ecommerce/productDetails/${id}`}
+            to={`/tour-service/${id}`}
             className="text-dark hover:text-primary dark:text-white87 hover:dark:text-primary"
           >
             {name}

@@ -23,6 +23,8 @@ class User(AbstractUser):
     fullname = models.CharField(max_length=60)
     role = models.ForeignKey(User_role, on_delete=models.SET_DEFAULT, default=None, null=True, blank=True)
     phone = models.CharField(max_length=15)
+    profileImage = models.ImageField(upload_to='images/profile_images', null=True, blank=True)
+    coverImage = models.ImageField(upload_to='images/profile_images', null=True, blank=True)
     registration_method = models.CharField(max_length=10, default='email',
         choices=(
         ('email', 'email'),

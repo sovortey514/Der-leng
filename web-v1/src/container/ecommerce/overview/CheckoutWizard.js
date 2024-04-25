@@ -253,12 +253,14 @@ function CheckOut({ dataProp, setRefreshCartData }) {
   const [paymentMethodSelected, setPaymentMethodSelected] = useState(null);
   const [refreshData , setRefreshData] = useState()
 
-  const paymentMethodDeleted = (id) => {
-    deletePaymentMedthod(id)
-    message.success('Payment delete successfully!');
-    setRefreshData(true);
+  const paymentMethodDeleted = async (id) => {
+    const response = await deletePaymentMedthod(id)
+    if(response.status===200) {
+      message.success('Payment delete successfully!');
+      setRefreshData(!refreshData);
+    }
   }
-
+  
   useEffect(() => {
     getPaymentMethod(setPaymentMethod)
     setRefreshData(false)

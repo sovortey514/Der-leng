@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Moulpali&display=swap');
 
 .font-kantumruy-pro {
   font-family: 'Kantumruy Pro', sans-serif;

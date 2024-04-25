@@ -30,9 +30,7 @@ class UserRegister(APIView):
 
     def post(self, request):
         try:
-            print(request.data)
             validate_data = user_validation(request.data)
-            print(validate_data)
         except ValidationError as e:
             return Response({'errors': e}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -113,12 +111,32 @@ class CurrentUserView(APIView):
     
     def put(self, request, format=None):
         user_update = request.user
-        print(user_update.id)
         try:
-            updated_user = validate_user_update(user_update=user_update, request_data=request.data)
-            return Response(UserSerializer(updated_user).data, status=status.HTTP_200_OK)
+            # updated_user = validate_user_update(user_update=user_update, request_data=request.data)
+            serializer = UserSerializer(request.user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except ValidationError as errors:
             return Response({'error': errors}, status=status.HTTP_400_BAD_REQUEST)
+        
+class SetPasswordView(APIView):
+    def post(self, request):
+        serializer = SetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            old_password = serializer.validated_data['old_password']
+            password = serializer.validated_data['password']
+            confirm_password = serializer.validated_data['confirm_password']
+            user = request.user
+            if not user.check_password(old_password):
+                return Response({"message": "Old password is incorrect."}, status=status.HTTP_400_BAD_REQUEST)
+            if password != confirm_password:
+                return Response({"message": "Password and confirmation do not match."}, status=status.HTTP_400_BAD_REQUEST)
+            user.set_password(password)
+            user.save()
+            return Response({"message": "Password has been updated successfully."}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SocialLoginView(ConvertTokenView):
     permission_classes = (permissions.AllowAny,)
@@ -144,7 +162,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAdminOrStaffOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = '__all__'
+    filterset_fields = ['fullname', 'username', 'email']
     search_fields = ['fullname', 'username', 'email']
 
 

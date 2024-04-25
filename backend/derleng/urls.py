@@ -2,6 +2,7 @@ from django.urls import include, path
 
 from derleng.views import BookingView, Payment_methodView
 from derleng.views.BookingDetailView import accept_booking, BookingDetailsAPIView
+from derleng.views.FavoritePackageView import FavoritePackageAPIView
 
 from .views import ThumbnailView, PackageView, ReviewView, CategoryView , CartView
 
@@ -22,6 +23,7 @@ urlpatterns = [
     path('thumbnails/<uuid:pk>' , ThumbnailView.ThumbnailAPIView.as_view() , name=''),
     path('reviews' , ReviewView.ReviewAPIView.as_view(), name=''),
     path('reviews/<uuid:pk>' , ReviewView.ReviewAPIView.as_view(), name=''),
+    path('favorites/' , FavoritePackageAPIView.as_view(), name=''),
     path('test-payment/', Payment_methodView.test_payment, name="test_payment"),
     path('test-payment_intent', Payment_methodView.test_payment_intent, name="test_payment"),
     path('payments', Payment_methodView.Payment_methodAPIView.as_view(), name='payment_method'),

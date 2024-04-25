@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.db.models import Q
 
+from authentication.validations import is_valid_password
+
 from .models import User, User_role
 from derleng.models import Profile_image
 
@@ -34,7 +36,7 @@ class BasicUserSerializer(serializers.ModelSerializer):
     role = BasicUser_roleSerializer()
     class Meta:
         model = User
-        fields = ['id', 'fullname', 'role']
+        fields = ['id', 'fullname', 'role',  "profileImage"]
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -53,12 +55,12 @@ class UserSerializer(serializers.ModelSerializer):
     role = BasicUser_roleSerializer()
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'fullname', 'role']
+        fields = ['id', 'username', 'email', 'fullname', "phone", 'role', "profileImage", "coverImage"]
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        image = self.get_profile_images(instance)
-        data.update(image)
+        # image = self.get_profile_images(instance)
+        # data.update(image)
         return data
     
     def get_profile_images(self, user):
@@ -72,3 +74,14 @@ class UserSerializer(serializers.ModelSerializer):
         if cover_image:
             images['cover_image'] = cover_image.image.url
         return images
+    
+class SetPasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True, required=True)
+    password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, data):
+        if not is_valid_password(data['password']):
+            raise serializers.ValidationError({"password": "Your password must be at least 8 charectors long, one letter and one digit."})
+        
+        return data

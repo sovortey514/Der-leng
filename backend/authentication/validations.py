@@ -88,7 +88,6 @@ def validate_user_update(user_update, request_data):
             user_update.set_password(password)
         else:
             errors['password'] = 'Your password must be at least 8 charectors long, one letter and one digit.'
-    print(errors)
     if errors:
         raise ValidationError(errors)
     user_update.save()

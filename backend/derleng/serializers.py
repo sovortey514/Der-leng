@@ -1,5 +1,5 @@
 from django.db.models import Avg
-from authentication.serializers import UserSerializer
+from authentication.serializers import BasicUserSerializer, UserSerializer
 from .models import *
 from rest_framework import serializers
 from backend.settings import MEDIA_URL 
@@ -72,6 +72,13 @@ class MediumPackageSerializer(serializers.ModelSerializer):
         data['schedule_place'] = instance.package_schedule_set.first().destination
         data['avg_rating'] = instance.review_set.all().aggregate(Avg("rating", default=0))['rating__avg']
         data['amount_rating'] = instance.review_set.count()
+        data['favorite'] = False
+
+        # Access user information from the request object
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            data['favorite'] = instance.favorites.filter(pk=request.user.id).exists()
+
         return data
 
 class PackageSerializer(serializers.ModelSerializer):
@@ -89,6 +96,13 @@ class PackageSerializer(serializers.ModelSerializer):
 
         data['avg_rating'] = instance.review_set.all().aggregate(Avg("rating", default=0))['rating__avg']
         data['amount_rating'] = instance.review_set.count()
+        data['favorite'] = False
+
+        # Access user information from the request object
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            data['favorite'] = instance.favorites.filter(pk=request.user.id).exists()
+            
         return data
 
 # =======================> Package Serializers Mixin <======================= 
@@ -146,6 +160,16 @@ class MediumCartSerializer(serializers.ModelSerializer):
         package = service.package
         data['package'] = SmallPackageSerializer(package).data
         data['service'] = Package_serviceSerializer(service).data
+        data["booking_details_id"] = None
+        data["review"] = None
+
+        booking_details = Booking_details.objects.filter(cart=instance).first()
+        if booking_details:
+            data["booking_details_id"] = booking_details.id
+            review = Review.objects.filter(booking_details=booking_details).first()
+            if review:
+                data["review"] = BasicReviewSerializer(review).data
+
         return data
 
 class Booking_detailsSerializer(serializers.ModelSerializer):
@@ -171,10 +195,20 @@ class MediumBookingSerializer(serializers.ModelSerializer):
         data["carts"] = MediumCartSerializer(cartList, many=True).data
         return data
         
+class BasicReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["user"] = BasicUserSerializer(instance.user).data
+        return data
         
 class ThumbnailSerializer(serializers.ModelSerializer):
     class Meta:

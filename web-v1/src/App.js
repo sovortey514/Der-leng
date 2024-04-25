@@ -4,14 +4,15 @@ import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import store from './redux/store';
-import user from './routes/user';
-import Auth from './routes/auth';
+import user from './app/routes/user';
+// import Auth from './routes/auth';
+import Auth from './app/routes/auth';
 import './static/css/style.css';
 import config from './config/config';
 import ProtectedRoute from './components/utilities/protectedRoute';
 import 'antd/dist/antd.less';
 
-const NotFound = lazy(() => import('./container/pages/404'));
+const NotFound = lazy(() => import('./app/container/pages/404'));
 
 const { theme } = config;
 

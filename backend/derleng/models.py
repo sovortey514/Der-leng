@@ -25,7 +25,7 @@ class Profile_image (models.Model):
             default = uuid.uuid4,
             editable = False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = image = models.ImageField(upload_to='images/profile_images', max_length=1000)
+    image = models.ImageField(upload_to='images/profile_images', max_length=1000)
     type = models.CharField(max_length=50, default='profile', choices=(('profile', 'profile'), ('cover', 'cover'),))
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -63,6 +63,7 @@ class Package (models.Model):
     tour_place_coordinate = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     video_url = models.CharField(max_length=255, null=True, blank=True)
+    favorites = models.ManyToManyField(User, blank=True, related_name="package_favorites")
     commission = models.ForeignKey(Commission, on_delete=models.SET_NULL, null=True, default=None)
     is_close = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -107,24 +108,6 @@ class Package_unavailable_date(models.Model):
             editable = False)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     unavailable_at = models.DateField()
-
-class Review (models.Model):
-    id = models.UUIDField(
-            primary_key = True,
-            default = uuid.uuid4,
-            editable = False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    package = models.ForeignKey(Package, on_delete=models.CASCADE)
-    rating = models.IntegerField(
-        validators=[
-            MinValueValidator(0, message="Rating must be greater than or equal to 0."),
-            MaxValueValidator(5, message="Rating must be less than or equal to 5.")
-        ]
-    )
-    comment = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-#====================================================> Payment
     
 class Payment_method (models.Model):
     id = models.UUIDField(
@@ -249,3 +232,22 @@ class Thumbnail (models.Model):
 
     def __str__(self) -> str:
         return f'{self.name}'
+    
+#====================================================> Review
+class Review (models.Model):
+    id = models.UUIDField(
+            primary_key = True,
+            default = uuid.uuid4,
+            editable = False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    booking_details = models.ForeignKey(Booking_details, on_delete=models.CASCADE)
+    rating = models.IntegerField(
+        validators=[
+            MinValueValidator(0, message="Rating must be greater than or equal to 0."),
+            MaxValueValidator(5, message="Rating must be less than or equal to 5.")
+        ]
+    )
+    comment = models.TextField(default="",null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    

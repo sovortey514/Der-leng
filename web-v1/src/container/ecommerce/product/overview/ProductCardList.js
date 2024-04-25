@@ -30,7 +30,7 @@ const ProductCardsList = React.memo(({ product }) => {
             <div className="product-single-description">
               <Heading className="mt-[25px] mb-4 text-lg font-semibold" as="h5">
                 <NavLink
-                  to={`/admin/ecommerce/productDetails/${id}`}
+                  to={`/tour-service/${id}`}
                   className="text-dark hover:text-primary dark:text-white87 hover:dark:text-primary"
                 >
                   {name}

@@ -33,8 +33,6 @@ const usePackageFetcher = () => {
             isLoadMore: false
         });
 
-        console.log("Set Data to init..")
-
         fetchPackage(1)
 
     }, [category, searchQuery, sortBy])
