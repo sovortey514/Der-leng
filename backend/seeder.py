@@ -11,8 +11,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 django.setup()
 
 print("[...............................   Flushing database   ...............................]")
-# call_command("flush", "--noinput")     # No verify
-call_command("flush")
+call_command("flush", "--noinput")     # No verify
+# call_command("flush")
  
 print("[...............................   Migrating database  ...............................] ")
 call_command("migrate")

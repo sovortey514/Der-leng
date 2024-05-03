@@ -3218,6 +3218,7 @@
       "user": "0a4619be-8be8-49cb-8655-d185e0535b94",
       "package": "28f6caf9-19e4-4480-919c-b31cb6a21ecb",
       "rating": 4,
+      "booking_details_id": "08dee6b9-5492-4d2d-96a5-9f4952e642dc",
       "comment": "so cool",
       "created_at": "2024-02-07T04:51:18.773Z"
     }
@@ -3229,6 +3230,7 @@
       "user": "f21fc5eb-34d4-43ce-af59-e7b1788da440",
       "package": "6fd827b8-976f-4748-89a5-e3a29083c98e",
       "rating": 4,
+      "booking_details_id": "08dee6b9-5492-4d2d-96a5-9f4952e642dc",
       "comment": "Loy men",
       "created_at": "2024-02-07T04:46:48.339Z"
     }
@@ -3240,6 +3242,7 @@
       "user": "25075751-bbd8-48f7-af58-8d75bbb03362",
       "package": "28f6caf9-19e4-4480-919c-b31cb6a21ecb",
       "rating": 4,
+      "booking_details_id": "08dee6b9-5492-4d2d-96a5-9f4952e642dc",
       "comment": "havwefwhef",
       "created_at": "2024-02-07T04:51:04.230Z"
     }
@@ -3251,6 +3254,7 @@
       "user": "0a4619be-8be8-49cb-8655-d185e0535b94",
       "package": "28f6caf9-19e4-4480-919c-b31cb6a21ecb",
       "rating": 5,
+      "booking_details_id": "08dee6b9-5492-4d2d-96a5-9f4952e642dc",
       "comment": "Loy men",
       "created_at": "2024-02-07T04:50:51.633Z"
     }
@@ -3262,6 +3266,7 @@
       "user": "45e1c024-12ac-4107-a9c0-8c5aa5fa6a5d",
       "package": "b658776b-135d-40ba-a4e5-01f089548a92",
       "rating": 5,
+      "booking_details_id": "08dee6b9-5492-4d2d-96a5-9f4952e642dc",
       "comment": "ywhhhhhhhhhhhhhhh",
       "created_at": "2024-02-07T04:47:32.886Z"
     }
@@ -3273,6 +3278,7 @@
       "user": "9ffc0c10-0c9d-439e-bb71-39758e870449",
       "package": "28f6caf9-19e4-4480-919c-b31cb6a21ecb",
       "rating": 5,
+      "booking_details_id": "08dee6b9-5492-4d2d-96a5-9f4952e642dc",
       "comment": "wowwwwwwwww",
       "created_at": "2024-02-07T04:47:49.034Z"
     }
@@ -3284,6 +3290,7 @@
       "user": "3c807f9b-7e76-4bcc-832c-8a0b2864794f",
       "package": "28f6caf9-19e4-4480-919c-b31cb6a21ecb",
       "rating": 5,
+      "booking_details_id": "08dee6b9-5492-4d2d-96a5-9f4952e642dc",
       "comment": "gydfct hahaha",
       "created_at": "2024-02-07T04:50:38.649Z"
     }
@@ -3295,6 +3302,7 @@
       "user": "38a42599-1550-4a4a-9de9-a7caf8068433",
       "package": "0b566c2a-3e71-4c14-bdf5-0eed178c404c",
       "rating": 5,
+      "booking_details_id": "08dee6b9-5492-4d2d-96a5-9f4952e642dc",
       "comment": "wow",
       "created_at": "2024-02-07T04:59:32.340Z"
     }
@@ -3306,6 +3314,7 @@
       "user": "05d02e5e-b56d-4933-882c-fa94ca8e8b0e",
       "package": "b658776b-135d-40ba-a4e5-01f089548a92",
       "rating": 5,
+      "booking_details_id": "08dee6b9-5492-4d2d-96a5-9f4952e642dc",
       "comment": "wowwwwwwwww",
       "created_at": "2024-02-07T04:47:16.445Z"
     }
@@ -3317,6 +3326,7 @@
       "user": "f21fc5eb-34d4-43ce-af59-e7b1788da440",
       "package": "6fd827b8-976f-4748-89a5-e3a29083c98e",
       "rating": 3,
+      "booking_details_id": "08dee6b9-5492-4d2d-96a5-9f4952e642dc",
       "comment": "Loy nas",
       "created_at": "2024-02-07T04:47:01.382Z"
     }
@@ -3335,7 +3345,8 @@
       "exp_month": 12,
       "exp_year": 26,
       "is_active": true,
-      "is_default": true
+      "is_default": true,
+      "created_at": "2024-02-07T04:47:16.445Z"
     }
   },
   {
@@ -3352,7 +3363,8 @@
       "exp_month": 12,
       "exp_year": 26,
       "is_active": true,
-      "is_default": true
+      "is_default": true,
+      "created_at": "2024-02-07T04:47:16.445Z"
     }
   },
   {
@@ -3369,7 +3381,8 @@
       "exp_month": 12,
       "exp_year": 26,
       "is_active": true,
-      "is_default": true
+      "is_default": true,
+      "created_at": "2024-02-07T04:47:16.445Z"
     }
   },
   {
@@ -3378,7 +3391,7 @@
     "fields": {
       "user": "35e74bc7-c3d3-4e7d-be44-8c2ac13ca096",
       "service": "648a9eae-5690-4578-a782-f2d9184f5153",
-      "customer_ammount": 6,
+      "customer_amount": 6,
       "booking_date": "2022-01-25T15:30:00.123Z",
       "created_at": "2024-01-31T19:25:33.805Z"
     }
@@ -3389,7 +3402,7 @@
     "fields": {
       "user": "35e74bc7-c3d3-4e7d-be44-8c2ac13ca096",
       "service": "1d80cce7-92ec-422d-95e6-3129533dfe07",
-      "customer_ammount": 6,
+      "customer_amount": 6,
       "booking_date": "2022-01-25T15:30:00.123Z",
       "created_at": "2024-01-31T19:33:55.537Z"
     }
@@ -3400,7 +3413,7 @@
     "fields": {
       "user": "35e74bc7-c3d3-4e7d-be44-8c2ac13ca096",
       "service": "d59b102d-a591-4a26-a951-b2c70d5bffb5",
-      "customer_ammount": 6,
+      "customer_amount": 6,
       "booking_date": "2022-01-25T15:30:00.123Z",
       "created_at": "2024-01-31T19:46:11.598Z"
     }
@@ -3411,7 +3424,7 @@
     "fields": {
       "user": "33be413a-dd3e-477a-ac7a-e8280c33ebbf",
       "service": "648a9eae-5690-4578-a782-f2d9184f5153",
-      "customer_ammount": 6,
+      "customer_amount": 6,
       "booking_date": "2022-01-25T15:30:00.123Z",
       "created_at": "2024-01-31T18:30:49.340Z"
     }
@@ -3422,7 +3435,7 @@
     "fields": {
       "user": "0bb13a1d-e5f2-4c68-a5c4-0ee708168954",
       "service": "648a9eae-5690-4578-a782-f2d9184f5153",
-      "customer_ammount": 4,
+      "customer_amount": 4,
       "booking_date": "2022-01-25T15:30:00.123Z",
       "created_at": "2024-01-26T21:12:35.319Z"
     }
@@ -3433,7 +3446,7 @@
     "fields": {
       "user": "35e74bc7-c3d3-4e7d-be44-8c2ac13ca096",
       "service": "648a9eae-5690-4578-a782-f2d9184f5153",
-      "customer_ammount": 4,
+      "customer_amount": 4,
       "booking_date": "2022-01-25T15:30:00.123Z",
       "created_at": "2024-01-27T18:19:11.155Z"
     }
@@ -3444,7 +3457,7 @@
     "fields": {
       "user": "35e74bc7-c3d3-4e7d-be44-8c2ac13ca096",
       "service": "575c0917-e69a-4ed5-989d-418316aa6d78",
-      "customer_ammount": 6,
+      "customer_amount": 6,
       "booking_date": "2022-01-25T15:30:00.123Z",
       "created_at": "2024-01-31T19:37:10.546Z"
     }
@@ -3455,7 +3468,7 @@
     "fields": {
       "user": "33be413a-dd3e-477a-ac7a-e8280c33ebbf",
       "service": "648a9eae-5690-4578-a782-f2d9184f5153",
-      "customer_ammount": 4,
+      "customer_amount": 4,
       "booking_date": "2022-01-25T15:30:00.123Z",
       "created_at": "2024-01-31T18:30:30.647Z"
     }
@@ -3466,7 +3479,7 @@
     "fields": {
       "user": "0bb13a1d-e5f2-4c68-a5c4-0ee708168954",
       "service": "648a9eae-5690-4578-a782-f2d9184f5153",
-      "customer_ammount": 4,
+      "customer_amount": 4,
       "booking_date": "2022-01-25T15:30:00.123Z",
       "created_at": "2024-01-26T21:19:08.697Z"
     }
